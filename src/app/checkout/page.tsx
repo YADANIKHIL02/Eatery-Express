@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -39,7 +40,15 @@ export default function CheckoutPage() {
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      paymentMethod: "creditCard", // Default payment method
+      fullName: "",
+      address: "",
+      city: "",
+      postalCode: "",
+      phoneNumber: "",
+      paymentMethod: "creditCard", 
+      cardNumber: "", 
+      expiryDate: "", 
+      cvv: "", 
     },
   });
 
