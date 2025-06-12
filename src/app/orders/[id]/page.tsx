@@ -1,7 +1,7 @@
 
 "use client"; // For using useSearchParams
 
-import React from 'react'; // Added missing React import
+import React, { useEffect, useState, use } from 'react'; // Added 'use' import
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, ChevronLeft, Clock, Package, Truck } from 'lucide-react';
@@ -10,7 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface OrderDetailsPageParams {
-  params: { id: string };
+  params: { id: string }; // The prop 'params' might be a Promise implicitly by Next.js
 }
 
 // Mock function to get order details. In a real app, this would fetch from a backend.
@@ -52,24 +52,34 @@ async function getOrderDetails(orderId: string) {
   };
 }
 
-// This page should be a client component if it uses hooks like useSearchParams directly.
-// Or, fetch data in a server component and pass to a client component if needed.
-// For simplicity with useSearchParams, making it client.
 export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
-  const searchParams = useSearchParams();
-  const isNewOrder = searchParams.get('new') === 'true';
+  // Use React.use to unwrap the params if it's a Promise.
+  // If `params` is already an object, `use` will return it directly.
+  const resolvedParams = use(params as Promise<{ id: string }> | { id: string });
+
+
+  const searchParamsHook = useSearchParams(); // Renamed to avoid conflict if searchParams was a prop
+  const isNewOrder = searchParamsHook.get('new') === 'true';
   const [orderDetails, setOrderDetails] = React.useState<Awaited<ReturnType<typeof getOrderDetails>> | null>(null);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      const data = await getOrderDetails(params.id);
-      setOrderDetails(data);
+    // Ensure resolvedParams and resolvedParams.id are available
+    if (resolvedParams && typeof resolvedParams.id === 'string') {
+      async function fetchData() {
+        setLoading(true);
+        const data = await getOrderDetails(resolvedParams.id);
+        setOrderDetails(data);
+        setLoading(false);
+      }
+      fetchData();
+    } else {
+      // Handle case where id might not be available (e.g., promise resolved to null or id is missing)
+      console.error("Order ID not available from resolved params.");
       setLoading(false);
+      setOrderDetails(null);
     }
-    fetchData();
-  }, [params.id]);
+  }, [resolvedParams?.id]); // Depend on the unwrapped id.
 
   if (loading) {
     return <div className="text-center py-10">Loading order details...</div>;
@@ -120,12 +130,12 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
                 Placed on: {new Date(orderDetails.date).toLocaleDateString()}
               </CardDescription>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
               ${orderDetails.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
                 orderDetails.status === 'Out for Delivery' ? 'bg-blue-100 text-blue-700' :
                 orderDetails.status === 'Preparing' ? 'bg-yellow-100 text-yellow-700' :
                 'bg-gray-100 text-gray-700' }
-            ">
+            `}>
               {getStatusIcon(orderDetails.status)}
               <span>{orderDetails.status}</span>
             </div>
@@ -189,4 +199,3 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
     </div>
   );
 }
-
