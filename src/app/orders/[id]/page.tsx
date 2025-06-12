@@ -1,5 +1,7 @@
+
 "use client"; // For using useSearchParams
 
+import React from 'react'; // Added missing React import
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, ChevronLeft, Clock, Package, Truck } from 'lucide-react';
@@ -187,3 +189,4 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
     </div>
   );
 }
+
