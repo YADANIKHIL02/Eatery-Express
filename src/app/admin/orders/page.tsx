@@ -84,8 +84,8 @@ export default function AdminOrdersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Button variant="outline" size="sm" className="mr-2" disabled>Update</Button>
-                        <Button variant="destructive" size="sm" disabled>Cancel</Button>
+                        <Button variant="outline" size="sm" className="mr-2">Update</Button>
+                        <Button variant="destructive" size="sm">Cancel</Button>
                       </td>
                     </tr>
                   ))}
