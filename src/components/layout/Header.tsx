@@ -24,7 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Header() {
   const { cartCount } = useCart();
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth(); // Added isAdmin
   const router = useRouter();
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -35,7 +35,7 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push('/'); // Redirect to home or login page after logout
+      router.push('/'); 
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -73,12 +73,14 @@ export default function Header() {
                   <span className="hidden sm:inline">Orders</span>
                 </Button>
               </Link>
-              <Link href="/admin" passHref>
-                <Button variant="ghost" className="flex items-center gap-1 text-foreground hover:text-primary px-2 sm:px-3">
-                  <Shield className="h-5 w-5" />
-                  <span className="hidden sm:inline">Admin</span>
-                </Button>
-              </Link>
+              {isAdmin && ( // Conditionally render Admin link
+                <Link href="/admin" passHref>
+                  <Button variant="ghost" className="flex items-center gap-1 text-foreground hover:text-primary px-2 sm:px-3">
+                    <Shield className="h-5 w-5" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </Button>
+                </Link>
+              )}
             </>
           )}
 
@@ -117,13 +119,12 @@ export default function Header() {
                     <ListOrdered className="mr-2 h-4 w-4" />
                     <span>My Orders</span>
                   </DropdownMenuItem>
-                  {/* Placeholder for admin role check to show admin link */}
-                  {/* {isAdmin && (
+                  {isAdmin && ( // Conditionally render Admin Panel link in dropdown
                     <DropdownMenuItem onClick={() => router.push('/admin')}>
                      <Shield className="mr-2 h-4 w-4" />
                       <span>Admin Panel</span>
                     </DropdownMenuItem>
-                  )} */}
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />

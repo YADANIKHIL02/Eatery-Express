@@ -79,9 +79,9 @@ export default function ProfilePage() {
     );
   }
 
-  if (!user) {
-    // AuthGuard should handle redirect, but this is a fallback
-    // It might briefly show if AuthGuard's redirect hasn't kicked in yet.
+  // AuthGuard should handle redirect if user is null after loading.
+  // This is a fallback, typically won't be seen if AuthGuard works as expected.
+  if (!user && !authLoading) { 
     return (
         <div className="flex justify-center items-center min-h-[50vh]">
          <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -89,6 +89,10 @@ export default function ProfilePage() {
        </div>
     );
   }
+  
+  // If user is somehow still null after loading and AuthGuard (should not happen)
+  if (!user) return null;
+
 
   return (
     <AuthGuard>
@@ -163,7 +167,7 @@ export default function ProfilePage() {
               </div>
             </div>
             
-            {isAdmin && (
+            {isAdmin && ( // Conditionally render Admin Actions section
                <>
                 <Separator />
                 <div>
