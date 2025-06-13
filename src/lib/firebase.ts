@@ -9,7 +9,14 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID, // Ensure this is in your .env.local if you use Analytics
 };
+
+if (typeof window !== 'undefined' && !firebaseConfig.apiKey) {
+  console.warn(
+    "Firebase API Key is missing. Please check your .env.local file and ensure NEXT_PUBLIC_FIREBASE_API_KEY is set correctly. You may need to restart your development server."
+  );
+}
 
 let app: FirebaseApp;
 if (!getApps().length) {
