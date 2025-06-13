@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, Home, Phone, User, Loader2, Wallet } from 'lucide-react';
+import { CreditCard, Home, Phone, User, Loader2, Wallet, Smartphone } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const checkoutSchema = z.object({
@@ -23,7 +23,7 @@ const checkoutSchema = z.object({
   city: z.string().min(2, "City is required."),
   postalCode: z.string().min(5, "Valid postal code is required."),
   phoneNumber: z.string().min(10, "Valid phone number is required."),
-  paymentMethod: z.enum(["creditCard", "paypal", "cashOnDelivery"], { required_error: "Please select a payment method." }),
+  paymentMethod: z.enum(["creditCard", "cashOnDelivery", "upi"], { required_error: "Please select a payment method." }),
   cardNumber: z.string().optional(),
   expiryDate: z.string().optional(),
   cvv: z.string().optional(),
@@ -68,6 +68,7 @@ export default function CheckoutPage() {
   }
 
   if (cartItems.length === 0 && !isProcessing) {
+    // Still show loader while redirecting to prevent flash of content
     return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
@@ -84,7 +85,7 @@ export default function CheckoutPage() {
     });
     clearCart();
     router.push(`/orders/${orderId}?new=true`);
-    setIsProcessing(false);
+    // No need to setIsProcessing(false) here as the component will unmount or re-evaluate.
   };
 
   const deliveryFee = 5.00;
@@ -176,6 +177,17 @@ export default function CheckoutPage() {
                                       className="sr-only"
                                     />
                                     <Wallet className="w-5 h-5" /> Cash on Delivery
+                                </Label>
+                                <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                    <Input
+                                      type="radio"
+                                      name={field.name}
+                                      value="upi"
+                                      checked={field.value === "upi"}
+                                      onChange={() => field.onChange("upi")}
+                                      className="sr-only"
+                                    />
+                                    <Smartphone className="w-5 h-5" /> UPI Payment
                                 </Label>
                             </div>
                         </FormControl>
