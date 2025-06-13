@@ -28,6 +28,15 @@ const checkoutSchema = z.object({
   cardNumber: z.string().optional(),
   expiryDate: z.string().optional(),
   cvv: z.string().optional(),
+  upiId: z.string().optional(),
+}).refine(data => {
+  if (data.paymentMethod === "upi") {
+    return data.upiId && data.upiId.length > 3 && data.upiId.includes('@');
+  }
+  return true;
+}, {
+  message: "Valid UPI ID (e.g., name@bank) is required for UPI payment.",
+  path: ["upiId"], 
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -68,12 +77,14 @@ export default function CheckoutPage() {
       cardNumber: "",
       expiryDate: "",
       cvv: "",
+      upiId: "",
     },
   });
   
   const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     setIsProcessing(true);
     console.log("Checkout Data:", data);
+    // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 2000));
     const orderId = Math.random().toString(36).substr(2, 9);
     
@@ -83,6 +94,7 @@ export default function CheckoutPage() {
       duration: 5000,
     });
     clearCart();
+    // Redirect to order details page
     router.push(`/orders/${orderId}?new=true`);
   };
 
@@ -100,6 +112,8 @@ export default function CheckoutPage() {
       </AuthGuard>
     );
   }
+  
+  const selectedPaymentMethod = form.watch("paymentMethod");
 
   return (
     <AuthGuard>
@@ -206,6 +220,26 @@ export default function CheckoutPage() {
                           </FormItem>
                       )}
                   />
+
+                  {selectedPaymentMethod === "upi" && (
+                    <FormField
+                      control={form.control}
+                      name="upiId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>UPI ID</FormLabel>
+                          <FormControl>
+                            <Input placeholder="yourname@bank" {...field} />
+                          </FormControl>
+                           <FormDescription>
+                            Enter your UPI ID for payment.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  
                   <p className="text-sm text-muted-foreground">
                     Secure payment processing by Eatery Express.
                   </p>
@@ -252,3 +286,5 @@ export default function CheckoutPage() {
     </AuthGuard>
   );
 }
+
+    
