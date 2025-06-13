@@ -64,12 +64,10 @@ export default function CheckoutPage() {
   });
 
   if (!hasMounted) {
-    // Initial render: show loader to match server-side rendering if cart is empty
     return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
   if (cartItems.length === 0 && !isProcessing) {
-    // Cart is empty after mount, or redirect is in progress
     return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
@@ -158,11 +156,25 @@ export default function CheckoutPage() {
                         <FormControl>
                             <div className="space-y-2">
                                 <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
-                                    <Input type="radio" value="creditCard" {...field} checked={field.value === "creditCard"} onChange={field.onChange} className="sr-only"/>
+                                    <Input
+                                      type="radio"
+                                      name={field.name}
+                                      value="creditCard"
+                                      checked={field.value === "creditCard"}
+                                      onChange={() => field.onChange("creditCard")}
+                                      className="sr-only"
+                                    />
                                     <CreditCard className="w-5 h-5" /> Credit Card
                                 </Label>
                                 <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
-                                    <Input type="radio" value="cashOnDelivery" {...field} checked={field.value === "cashOnDelivery"} onChange={field.onChange} className="sr-only"/>
+                                    <Input
+                                      type="radio"
+                                      name={field.name}
+                                      value="cashOnDelivery"
+                                      checked={field.value === "cashOnDelivery"}
+                                      onChange={() => field.onChange("cashOnDelivery")}
+                                      className="sr-only"
+                                    />
                                     <Wallet className="w-5 h-5" /> Cash on Delivery
                                 </Label>
                             </div>
