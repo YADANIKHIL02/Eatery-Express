@@ -16,27 +16,63 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard, Home, Phone, User, Loader2, Wallet, Smartphone } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import AuthGuard from '@/components/guards/AuthGuard'; // Import AuthGuard
+import AuthGuard from '@/components/guards/AuthGuard';
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Full name is required."),
   address: z.string().min(5, "Address is required."),
   city: z.string().min(2, "City is required."),
   postalCode: z.string().min(5, "Valid postal code is required."),
-  phoneNumber: z.string().min(10, "Valid phone number is required."),
+  phoneNumber: z.string().min(10, "Valid phone number is required.").regex(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/, "Invalid phone number format."),
   paymentMethod: z.enum(["creditCard", "cashOnDelivery", "upi"], { required_error: "Please select a payment method." }),
   cardNumber: z.string().optional(),
   expiryDate: z.string().optional(),
   cvv: z.string().optional(),
   upiId: z.string().optional(),
-}).refine(data => {
+}).superRefine((data, ctx) => {
   if (data.paymentMethod === "upi") {
-    return data.upiId && data.upiId.length > 3 && data.upiId.includes('@');
+    if (!data.upiId || data.upiId.length < 3 || !data.upiId.includes('@')) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Valid UPI ID (e.g., name@bank) is required.",
+        path: ["upiId"],
+      });
+    }
   }
-  return true;
-}, {
-  message: "Valid UPI ID (e.g., name@bank) is required for UPI payment.",
-  path: ["upiId"], 
+  if (data.paymentMethod === "creditCard") {
+    if (!data.cardNumber || !/^\d{13,19}$/.test(data.cardNumber)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Valid card number (13-19 digits) is required.",
+        path: ["cardNumber"],
+      });
+    }
+    if (!data.expiryDate || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(data.expiryDate)) {
+       ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Valid expiry date (MM/YY) is required.",
+        path: ["expiryDate"],
+      });
+    } else {
+        const [month, year] = data.expiryDate.split('/').map(Number);
+        const currentYear = new Date().getFullYear() % 100;
+        const currentMonth = new Date().getMonth() + 1;
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Card has expired.",
+                path: ["expiryDate"],
+            });
+        }
+    }
+    if (!data.cvv || !/^\d{3,4}$/.test(data.cvv)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Valid CVV (3 or 4 digits) is required.",
+        path: ["cvv"],
+      });
+    }
+  }
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -52,7 +88,6 @@ export default function CheckoutPage() {
     setHasMounted(true);
   }, []);
 
-  // This useEffect handles redirection if cart is empty *after* component has mounted
   useEffect(() => {
     if (hasMounted && cartItems.length === 0 && !isProcessing) {
       toast({
@@ -73,7 +108,7 @@ export default function CheckoutPage() {
       city: "",
       postalCode: "",
       phoneNumber: "",
-      paymentMethod: "creditCard", 
+      paymentMethod: "creditCard",
       cardNumber: "",
       expiryDate: "",
       cvv: "",
@@ -84,7 +119,6 @@ export default function CheckoutPage() {
   const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     setIsProcessing(true);
     console.log("Checkout Data:", data);
-    // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 2000));
     const orderId = Math.random().toString(36).substr(2, 9);
     
@@ -94,18 +128,15 @@ export default function CheckoutPage() {
       duration: 5000,
     });
     clearCart();
-    // Redirect to order details page
     router.push(`/orders/${orderId}?new=true`);
   };
 
   const deliveryFee = 5.00;
   const totalAmount = cartTotal + deliveryFee;
 
-  // Consistent initial render: If not mounted or cart is empty (and not processing), show loader.
-  // The redirect logic in useEffect will handle moving away if cart is empty post-mount.
   if (!hasMounted || (cartItems.length === 0 && !isProcessing)) {
     return (
-      <AuthGuard> {/* Ensure loader is shown within AuthGuard if user is being authenticated */}
+      <AuthGuard>
         <div className="flex justify-center items-center min-h-[50vh]">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
@@ -184,10 +215,10 @@ export default function CheckoutPage() {
                                   <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
                                       <Input
                                         type="radio"
-                                        name={field.name} // Keep name for grouping
+                                        name={field.name}
                                         value="creditCard"
                                         checked={field.value === "creditCard"}
-                                        onChange={() => field.onChange("creditCard")} // Explicitly pass value
+                                        onChange={() => field.onChange("creditCard")}
                                         className="sr-only"
                                       />
                                       <CreditCard className="w-5 h-5" /> Credit Card
@@ -220,6 +251,34 @@ export default function CheckoutPage() {
                           </FormItem>
                       )}
                   />
+
+                  {selectedPaymentMethod === "creditCard" && (
+                    <>
+                      <FormField control={form.control} name="cardNumber" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Card Number</FormLabel>
+                          <FormControl><Input placeholder="0000 0000 0000 0000" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField control={form.control} name="expiryDate" render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Expiry Date</FormLabel>
+                            <FormControl><Input placeholder="MM/YY" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                        <FormField control={form.control} name="cvv" render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>CVV</FormLabel>
+                            <FormControl><Input placeholder="123" {...field} type="password" /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )} />
+                      </div>
+                    </>
+                  )}
 
                   {selectedPaymentMethod === "upi" && (
                     <FormField
@@ -286,5 +345,3 @@ export default function CheckoutPage() {
     </AuthGuard>
   );
 }
-
-    
