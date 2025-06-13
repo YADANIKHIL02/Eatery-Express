@@ -15,7 +15,7 @@ export default function HomePage() {
       <section className="text-center py-16 bg-gradient-to-br from-primary/10 to-accent/5 rounded-xl">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-center text-primary">
-            DineGo: Your next meal, delivered.
+            Feastly: Your next meal, delivered.
           </h1>
           <p className="text-lg text-foreground/80 mb-10 max-w-xl mx-auto text-center">
             Discover top-rated restaurants and enjoy fast delivery to your doorstep.

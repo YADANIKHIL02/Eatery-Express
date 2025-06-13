@@ -305,7 +305,7 @@ export default function CheckoutPage() {
                   )}
                   
                   <p className="text-xs text-muted-foreground text-center pt-2">
-                    Secure payment processing by DineGo.
+                    Secure payment processing by Feastly.
                   </p>
                 </CardContent>
               </Card>
@@ -352,5 +352,3 @@ export default function CheckoutPage() {
     </AuthGuard>
   );
 }
-
-    

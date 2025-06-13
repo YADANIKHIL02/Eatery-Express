@@ -7,7 +7,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
-  title: 'DineGo',
+  title: 'Feastly',
   description: 'Delicious food, delivered fast.',
 };
 
