@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, UserPlus } from 'lucide-react';
+import { Loader2, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -22,7 +22,7 @@ const signupSchema = z.object({
   confirmPassword: z.string().min(6, "Password must be at least 6 characters."),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords do not match.",
-  path: ["confirmPassword"], // path to field that will display the error
+  path: ["confirmPassword"], 
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
@@ -30,6 +30,8 @@ type SignupFormData = z.infer<typeof signupSchema>;
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -49,7 +51,7 @@ export default function SignupPage() {
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
       toast({ title: "Signup Successful!", description: "Welcome! You can now login." });
-      const redirectUrl = searchParams.get('redirect') || '/login'; // Redirect to login after signup
+      const redirectUrl = searchParams.get('redirect') || '/login'; 
       router.push(redirectUrl);
     } catch (e: any) {
       setError(e.message || "Failed to sign up. Please try again.");
@@ -94,7 +96,24 @@ export default function SignupPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <div className="relative">
+                        <Input 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="••••••••" 
+                          {...field} 
+                          className="pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -107,7 +126,24 @@ export default function SignupPage() {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <div className="relative">
+                        <Input 
+                          type={showConfirmPassword ? "text" : "password"} 
+                          placeholder="••••••••" 
+                          {...field} 
+                          className="pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          <span className="sr-only">{showConfirmPassword ? "Hide password" : "Show password"}</span>
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
