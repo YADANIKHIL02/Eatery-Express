@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard, Home, Phone, User, Loader2, Wallet, Smartphone } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import AuthGuard from '@/components/guards/AuthGuard'; // Import AuthGuard
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Full name is required."),
@@ -42,11 +43,18 @@ export default function CheckoutPage() {
     setHasMounted(true);
   }, []);
 
+  // This useEffect handles redirection if cart is empty *after* component has mounted
   useEffect(() => {
     if (hasMounted && cartItems.length === 0 && !isProcessing) {
+      toast({
+        title: "Your cart is empty",
+        description: "Redirecting you to the homepage.",
+        variant: "default"
+      });
       router.push('/');
     }
-  }, [hasMounted, cartItems, isProcessing, router]);
+  }, [hasMounted, cartItems, isProcessing, router, toast]);
+
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -56,22 +64,13 @@ export default function CheckoutPage() {
       city: "",
       postalCode: "",
       phoneNumber: "",
-      paymentMethod: "creditCard",
+      paymentMethod: "creditCard", 
       cardNumber: "",
       expiryDate: "",
       cvv: "",
     },
   });
-
-  if (!hasMounted) {
-    return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
-  if (cartItems.length === 0 && !isProcessing) {
-    // Still show loader while redirecting to prevent flash of content
-    return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
-  }
-
+  
   const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     setIsProcessing(true);
     console.log("Checkout Data:", data);
@@ -85,158 +84,171 @@ export default function CheckoutPage() {
     });
     clearCart();
     router.push(`/orders/${orderId}?new=true`);
-    // No need to setIsProcessing(false) here as the component will unmount or re-evaluate.
   };
 
   const deliveryFee = 5.00;
   const totalAmount = cartTotal + deliveryFee;
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold font-headline mb-8 text-center">Checkout</h1>
-      
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Card className="md:col-span-1 shadow-lg">
-            <CardHeader>
-              <CardTitle className="font-headline text-xl flex items-center gap-2"><Home className="w-5 h-5 text-primary"/>Delivery Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField control={form.control} name="fullName" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="address" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Street Address</FormLabel>
-                  <FormControl><Input placeholder="123 Main St" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField control={form.control} name="city" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl><Input placeholder="Anytown" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="postalCode" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Postal Code</FormLabel>
-                    <FormControl><Input placeholder="12345" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-              </div>
-              <FormField control={form.control} name="phoneNumber" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl><Input type="tel" placeholder="(555) 123-4567" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
+  // Consistent initial render: If not mounted or cart is empty (and not processing), show loader.
+  // The redirect logic in useEffect will handle moving away if cart is empty post-mount.
+  if (!hasMounted || (cartItems.length === 0 && !isProcessing)) {
+    return (
+      <AuthGuard> {/* Ensure loader is shown within AuthGuard if user is being authenticated */}
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      </AuthGuard>
+    );
+  }
 
-          <div className="space-y-8">
-            <Card className="shadow-lg">
+  return (
+    <AuthGuard>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold font-headline mb-8 text-center">Checkout</h1>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="md:col-span-1 shadow-lg">
               <CardHeader>
-                <CardTitle className="font-headline text-xl flex items-center gap-2"><CreditCard className="w-5 h-5 text-primary"/>Payment Method</CardTitle>
-                 <CardDescription>This is a simplified payment section for demo purposes.</CardDescription>
+                <CardTitle className="font-headline text-xl flex items-center gap-2"><Home className="w-5 h-5 text-primary"/>Delivery Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <FormField
-                    control={form.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                        <FormItem className="space-y-3">
-                        <FormControl>
-                            <div className="space-y-2">
-                                <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
-                                    <Input
-                                      type="radio"
-                                      name={field.name}
-                                      value="creditCard"
-                                      checked={field.value === "creditCard"}
-                                      onChange={() => field.onChange("creditCard")}
-                                      className="sr-only"
-                                    />
-                                    <CreditCard className="w-5 h-5" /> Credit Card
-                                </Label>
-                                <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
-                                    <Input
-                                      type="radio"
-                                      name={field.name}
-                                      value="cashOnDelivery"
-                                      checked={field.value === "cashOnDelivery"}
-                                      onChange={() => field.onChange("cashOnDelivery")}
-                                      className="sr-only"
-                                    />
-                                    <Wallet className="w-5 h-5" /> Cash on Delivery
-                                </Label>
-                                <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
-                                    <Input
-                                      type="radio"
-                                      name={field.name}
-                                      value="upi"
-                                      checked={field.value === "upi"}
-                                      onChange={() => field.onChange("upi")}
-                                      className="sr-only"
-                                    />
-                                    <Smartphone className="w-5 h-5" /> UPI Payment
-                                </Label>
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <p className="text-sm text-muted-foreground">
-                  Secure payment processing by Eatery Express.
-                </p>
+                <FormField control={form.control} name="fullName" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="address" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Street Address</FormLabel>
+                    <FormControl><Input placeholder="123 Main St" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField control={form.control} name="city" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl><Input placeholder="Anytown" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="postalCode" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Postal Code</FormLabel>
+                      <FormControl><Input placeholder="12345" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
+                <FormField control={form.control} name="phoneNumber" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl><Input type="tel" placeholder="(555) 123-4567" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-headline text-xl">Order Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {cartItems.map(item => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span>{item.name} x {item.quantity}</span>
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+            <div className="space-y-8">
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="font-headline text-xl flex items-center gap-2"><CreditCard className="w-5 h-5 text-primary"/>Payment Method</CardTitle>
+                  <CardDescription>This is a simplified payment section for demo purposes.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField
+                      control={form.control}
+                      name="paymentMethod"
+                      render={({ field }) => (
+                          <FormItem className="space-y-3">
+                          <FormControl>
+                              <div className="space-y-2">
+                                  <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                      <Input
+                                        type="radio"
+                                        name={field.name} // Keep name for grouping
+                                        value="creditCard"
+                                        checked={field.value === "creditCard"}
+                                        onChange={() => field.onChange("creditCard")} // Explicitly pass value
+                                        className="sr-only"
+                                      />
+                                      <CreditCard className="w-5 h-5" /> Credit Card
+                                  </Label>
+                                  <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                      <Input
+                                        type="radio"
+                                        name={field.name}
+                                        value="cashOnDelivery"
+                                        checked={field.value === "cashOnDelivery"}
+                                        onChange={() => field.onChange("cashOnDelivery")}
+                                        className="sr-only"
+                                      />
+                                      <Wallet className="w-5 h-5" /> Cash on Delivery
+                                  </Label>
+                                  <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                      <Input
+                                        type="radio"
+                                        name={field.name}
+                                        value="upi"
+                                        checked={field.value === "upi"}
+                                        onChange={() => field.onChange("upi")}
+                                        className="sr-only"
+                                      />
+                                      <Smartphone className="w-5 h-5" /> UPI Payment
+                                  </Label>
+                              </div>
+                          </FormControl>
+                          <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Secure payment processing by Eatery Express.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="font-headline text-xl">Order Summary</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {cartItems.map(item => (
+                    <div key={item.id} className="flex justify-between text-sm">
+                      <span>{item.name} x {item.quantity}</span>
+                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                  ))}
+                  <Separator />
+                  <div className="flex justify-between text-sm">
+                    <span>Subtotal</span>
+                    <span>${cartTotal.toFixed(2)}</span>
                   </div>
-                ))}
-                <Separator />
-                <div className="flex justify-between text-sm">
-                  <span>Subtotal</span>
-                  <span>${cartTotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Delivery Fee</span>
-                  <span>${deliveryFee.toFixed(2)}</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total Amount</span>
-                  <span>${totalAmount.toFixed(2)}</span>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button type="submit" size="lg" className="w-full" disabled={isProcessing || cartItems.length === 0}>
-                  {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {isProcessing ? "Processing..." : "Place Order"}
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </form>
-      </Form>
-    </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Delivery Fee</span>
+                    <span>${deliveryFee.toFixed(2)}</span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between font-bold text-lg">
+                    <span>Total Amount</span>
+                    <span>${totalAmount.toFixed(2)}</span>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button type="submit" size="lg" className="w-full" disabled={isProcessing || cartItems.length === 0}>
+                    {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isProcessing ? "Processing..." : "Place Order"}
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </AuthGuard>
   );
 }
