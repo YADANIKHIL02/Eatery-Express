@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard, Home, Phone, User, Loader2, Wallet } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Full name is required."),
@@ -24,9 +24,9 @@ const checkoutSchema = z.object({
   postalCode: z.string().min(5, "Valid postal code is required."),
   phoneNumber: z.string().min(10, "Valid phone number is required."),
   paymentMethod: z.enum(["creditCard", "paypal", "cashOnDelivery"], { required_error: "Please select a payment method." }),
-  cardNumber: z.string().optional(), // Simplified
-  expiryDate: z.string().optional(), // Simplified
-  cvv: z.string().optional(), // Simplified
+  cardNumber: z.string().optional(),
+  expiryDate: z.string().optional(),
+  cvv: z.string().optional(),
 });
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
@@ -36,6 +36,17 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (hasMounted && cartItems.length === 0 && !isProcessing) {
+      router.push('/');
+    }
+  }, [hasMounted, cartItems, isProcessing, router]);
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -52,19 +63,21 @@ export default function CheckoutPage() {
     },
   });
 
-  if (cartItems.length === 0 && !isProcessing) { // Avoid redirect loop if already processing
-     if (typeof window !== 'undefined') router.push('/'); // Redirect if cart is empty
-     return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+  if (!hasMounted) {
+    // Initial render: show loader to match server-side rendering if cart is empty
+    return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
+  if (cartItems.length === 0 && !isProcessing) {
+    // Cart is empty after mount, or redirect is in progress
+    return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+  }
 
   const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     setIsProcessing(true);
     console.log("Checkout Data:", data);
-    // Simulate order placement
     await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const orderId = Math.random().toString(36).substr(2, 9); // Mock order ID
+    const orderId = Math.random().toString(36).substr(2, 9);
     
     toast({
       title: "Order Placed Successfully!",
@@ -72,7 +85,7 @@ export default function CheckoutPage() {
       duration: 5000,
     });
     clearCart();
-    router.push(`/orders/${orderId}?new=true`); // Navigate to a simplified order status page
+    router.push(`/orders/${orderId}?new=true`);
     setIsProcessing(false);
   };
 
@@ -143,7 +156,6 @@ export default function CheckoutPage() {
                     render={({ field }) => (
                         <FormItem className="space-y-3">
                         <FormControl>
-                            {/* In a real app, use @radix-ui/react-radio-group */}
                             <div className="space-y-2">
                                 <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
                                     <Input type="radio" value="creditCard" {...field} checked={field.value === "creditCard"} onChange={field.onChange} className="sr-only"/>
@@ -192,7 +204,7 @@ export default function CheckoutPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" size="lg" className="w-full" disabled={isProcessing}>
+                <Button type="submit" size="lg" className="w-full" disabled={isProcessing || cartItems.length === 0}>
                   {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isProcessing ? "Processing..." : "Place Order"}
                 </Button>
