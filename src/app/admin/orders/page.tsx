@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ListOrdered } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import React, { useState } from 'react'; // Added useState
+import React, { useState } from 'react';
 
 // Mock data for initial orders
 const initialAdminOrders = [
@@ -39,9 +39,22 @@ export default function AdminOrdersPage() {
   };
 
   const handleUpdateOrder = (orderId: string) => {
-    setOrders(prevOrders => 
+    const orderToUpdate = orders.find(o => o.id === orderId);
+
+    if (orderToUpdate && (orderToUpdate.status === "Cancelled" || orderToUpdate.status === "Delivered")) {
+      toast({
+        title: "Update Action",
+        description: `Order ${orderId} is already ${orderToUpdate.status} and cannot be updated further.`,
+        variant: "default",
+      });
+      return;
+    }
+
+    setOrders(prevOrders =>
       prevOrders.map(order => {
-        if (order.id === orderId && order.status !== "Cancelled" && order.status !== "Delivered") {
+        if (order.id === orderId) {
+          // The check for "Cancelled" or "Delivered" is done above,
+          // so if we reach here, the order is updatable.
           const newStatus = statusCycle[order.status];
           toast({
             title: "Order Updated",
@@ -52,19 +65,24 @@ export default function AdminOrdersPage() {
         return order;
       })
     );
-    if (orders.find(o => o.id === orderId && (o.status === "Cancelled" || o.status === "Delivered"))) {
-      toast({
-        title: "Update Action",
-        description: `Order ${orderId} is already ${orders.find(o => o.id === orderId)?.status} and cannot be updated further.`,
-        variant: "default",
-      });
-    }
   };
 
   const handleCancelOrder = (orderId: string) => {
+    const orderToCancel = orders.find(o => o.id === orderId);
+
+    if (orderToCancel && (orderToCancel.status === "Cancelled" || orderToCancel.status === "Delivered")) {
+      toast({
+        title: "Cancel Action",
+        description: `Order ${orderId} is already ${orderToCancel.status} and cannot be cancelled.`,
+        variant: "default",
+      });
+      return;
+    }
+
     setOrders(prevOrders =>
       prevOrders.map(order => {
-        if (order.id === orderId && order.status !== "Cancelled" && order.status !== "Delivered") {
+        if (order.id === orderId) {
+           // The check for "Cancelled" or "Delivered" is done above.
           toast({
             title: "Order Cancelled",
             description: `Order ${orderId} has been cancelled.`,
@@ -75,13 +93,6 @@ export default function AdminOrdersPage() {
         return order;
       })
     );
-     if (orders.find(o => o.id === orderId && (o.status === "Cancelled" || o.status === "Delivered"))) {
-      toast({
-        title: "Cancel Action",
-        description: `Order ${orderId} is already ${orders.find(o => o.id === orderId)?.status} and cannot be cancelled.`,
-        variant: "default",
-      });
-    }
   };
 
   return (
