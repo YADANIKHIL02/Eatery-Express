@@ -5,9 +5,15 @@ import { Home, ListOrdered, ShoppingCart, Utensils } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
   const { cartCount } = useCart();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50">
@@ -33,7 +39,7 @@ export default function Header() {
             <Button variant="ghost" className="relative flex items-center gap-1 text-foreground hover:text-primary">
               <ShoppingCart className="h-5 w-5" />
               <span>Cart</span>
-              {cartCount > 0 && (
+              {hasMounted && cartCount > 0 && (
                 <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs">
                   {cartCount}
                 </Badge>
