@@ -5,14 +5,16 @@ import { useAuth } from '@/context/AuthContext';
 import AuthGuard from '@/components/guards/AuthGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { UserCircle, Mail, Edit3, Shield } from 'lucide-react';
+import { UserCircle, Mail, Edit3, Shield, LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
-  const { user, isAdmin } = useAuth(); // Assuming isAdmin is available from AuthContext
+  const { user, isAdmin } = useAuth(); 
   const router = useRouter();
+  const { toast } = useToast();
 
   const getUserInitials = (email?: string | null) => {
     if (!email) return 'U';
@@ -21,6 +23,20 @@ export default function ProfilePage() {
       return nameParts[0][0] + nameParts[1][0];
     }
     return email.substring(0, 2).toUpperCase();
+  };
+
+  const handleEditProfile = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "The ability to edit your profile is not yet implemented.",
+    });
+  };
+
+  const handleChangePassword = () => {
+    toast({
+      title: "Feature Coming Soon",
+      description: "The ability to change your password is not yet implemented.",
+    });
   };
 
   if (!user) {
@@ -72,11 +88,11 @@ export default function ProfilePage() {
             <div>
               <h3 className="text-lg font-semibold mb-3">Actions</h3>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button variant="outline" disabled className="w-full sm:w-auto">
-                  <Edit3 className="mr-2 h-4 w-4" /> Edit Profile (Coming Soon)
+                <Button variant="outline" onClick={handleEditProfile} className="w-full sm:w-auto">
+                  <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
                 </Button>
-                 <Button variant="outline" disabled className="w-full sm:w-auto">
-                  Change Password (Coming Soon)
+                 <Button variant="outline" onClick={handleChangePassword} className="w-full sm:w-auto">
+                  <LockKeyhole className="mr-2 h-4 w-4" /> Change Password
                 </Button>
               </div>
             </div>
