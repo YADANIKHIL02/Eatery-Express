@@ -12,16 +12,15 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="text-center py-12 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl shadow-inner">
+      <section className="text-center py-16 bg-gradient-to-br from-primary/10 to-accent/5 rounded-xl">
         <div className="container mx-auto px-4">
-          <Utensils className="h-16 w-16 text-primary mx-auto mb-4" />
-          <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4 text-primary">
-            Welcome to DineGo
+          <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-center text-primary">
+            DineGo: Your next meal, delivered.
           </h1>
-          <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto">
-            Discover delicious meals from your favorite local restaurants, delivered right to your doorstep.
+          <p className="text-lg text-foreground/80 mb-10 max-w-xl mx-auto text-center">
+            Discover top-rated restaurants and enjoy fast delivery to your doorstep.
           </p>
-          <div className="max-w-xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <SearchBar />
           </div>
         </div>

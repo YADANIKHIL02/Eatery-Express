@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { mockRestaurants, mockDishes } from '@/data/mock';
 import type { Restaurant, Dish } from '@/types';
@@ -39,13 +40,13 @@ export default async function RestaurantPage({ params }: RestaurantPageParams) {
   return (
     <div className="space-y-8">
       <Link href="/" passHref>
-        <Button variant="outline" className="mb-6">
+        <Button variant="outline" className="mb-2">
           <ChevronLeft className="mr-2 h-4 w-4" /> Back to Restaurants
         </Button>
       </Link>
 
       {/* Restaurant Header */}
-      <section className="relative h-64 md:h-80 rounded-xl overflow-hidden shadow-lg">
+      <section className="relative h-60 md:h-72 rounded-lg overflow-hidden shadow-lg">
         <Image
           src={restaurant.imageUrl}
           alt={restaurant.name}
@@ -54,16 +55,16 @@ export default async function RestaurantPage({ params }: RestaurantPageParams) {
           className="brightness-75"
           data-ai-hint="restaurant interior"
         />
-        <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold font-headline text-white mb-2">{restaurant.name}</h1>
-          <div className="flex items-center space-x-4 text-gray-200">
-            <Badge variant="secondary" className="bg-white/20 text-white backdrop-blur-sm">{restaurant.cuisine}</Badge>
-            <div className="flex items-center">
-              <Star className="w-5 h-5 mr-1 text-yellow-400 fill-yellow-400" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex flex-col justify-end p-6 md:p-8">
+          <h1 className="text-3xl md:text-4xl font-bold font-headline text-white mb-2 drop-shadow-md">{restaurant.name}</h1>
+          <div className="flex items-center space-x-4 text-gray-100">
+            <Badge variant="secondary" className="bg-white/25 text-white backdrop-blur-sm text-xs px-2 py-1">{restaurant.cuisine}</Badge>
+            <div className="flex items-center text-sm">
+              <Star className="w-4 h-4 mr-1 text-yellow-300 fill-yellow-300" />
               <span>{restaurant.rating.toFixed(1)}</span>
             </div>
-            <div className="flex items-center">
-              <Clock className="w-5 h-5 mr-1" />
+            <div className="flex items-center text-sm">
+              <Clock className="w-4 h-4 mr-1" />
               <span>{restaurant.deliveryTime}</span>
             </div>
           </div>
@@ -74,7 +75,7 @@ export default async function RestaurantPage({ params }: RestaurantPageParams) {
       <section>
         <h2 className="text-2xl font-bold font-headline mb-6">Menu</h2>
         {menu.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
             {menu.map((dish) => (
               <DishCard key={dish.id} dish={dish} />
             ))}

@@ -1,3 +1,4 @@
+
 import type { Restaurant, Dish } from '@/types';
 
 export const mockDishes: Dish[] = [

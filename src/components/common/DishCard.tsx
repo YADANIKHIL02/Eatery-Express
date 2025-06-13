@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -35,14 +36,14 @@ export default function DishCard({ dish }: DishCardProps) {
           data-ai-hint="food dish"
         />
       </div>
-      <CardHeader>
-        <CardTitle className="font-headline text-md">{dish.name}</CardTitle>
+      <CardHeader className="pb-2">
+        <CardTitle className="font-headline text-lg leading-tight">{dish.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{dish.description}</p>
-        <p className="text-lg font-semibold text-primary">${dish.price.toFixed(2)}</p>
+      <CardContent className="flex-grow pt-0 pb-3">
+        <p className="text-xs text-muted-foreground mb-2 line-clamp-2 h-8">{dish.description}</p>
+        <p className="text-base font-semibold text-primary">${dish.price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="pt-0">
         <Button onClick={handleAddToCart} className="w-full">
           <PlusCircle className="mr-2 h-5 w-5" />
           Add to Cart

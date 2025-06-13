@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCart } from '@/context/CartContext';
@@ -38,7 +39,7 @@ export default function CartPage() {
         <div className="lg:col-span-2 space-y-4">
           {cartItems.map(item => (
             <Card key={item.id} className="flex items-center p-4 gap-4 shadow-sm">
-              <div className="relative w-20 h-20 rounded-md overflow-hidden">
+              <div className="relative w-20 h-20 rounded-md overflow-hidden shrink-0">
                 <Image src={item.imageUrl} alt={item.name} layout="fill" objectFit="cover" data-ai-hint="food item" />
               </div>
               <div className="flex-grow">

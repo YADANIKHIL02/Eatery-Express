@@ -1,7 +1,8 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Restaurant } from '@/types';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -22,22 +23,22 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
             data-ai-hint="restaurant food"
           />
         </div>
-        <CardHeader>
-          <CardTitle className="font-headline text-lg">{restaurant.name}</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="font-headline text-xl">{restaurant.name}</CardTitle>
         </CardHeader>
-        <CardContent className="flex-grow">
-          <Badge variant="secondary" className="mb-2">{restaurant.cuisine}</Badge>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Star className="w-4 h-4 mr-1 text-yellow-500 fill-yellow-500" />
-            <span>{restaurant.rating.toFixed(1)}</span>
+        <CardContent className="flex-grow pt-0">
+          <Badge variant="secondary" className="mb-2 text-xs">{restaurant.cuisine}</Badge>
+          <div className="flex items-center justify-between text-sm text-muted-foreground mt-1">
+            <div className="flex items-center">
+              <Star className="w-4 h-4 mr-1 text-yellow-400 fill-yellow-400" />
+              <span>{restaurant.rating.toFixed(1)}</span>
+            </div>
+            <div className="flex items-center">
+              <Clock className="w-4 h-4 mr-1" />
+              <span>{restaurant.deliveryTime}</span>
+            </div>
           </div>
         </CardContent>
-        <CardFooter>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Clock className="w-4 h-4 mr-1" />
-            <span>{restaurant.deliveryTime}</span>
-          </div>
-        </CardFooter>
       </Card>
     </Link>
   );
