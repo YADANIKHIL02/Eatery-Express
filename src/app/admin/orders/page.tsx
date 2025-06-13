@@ -50,21 +50,20 @@ export default function AdminOrdersPage() {
       return;
     }
 
+    if (!orderToUpdate) return; // Should not happen if button is active
+
+    const newStatus = statusCycle[orderToUpdate.status];
+
     setOrders(prevOrders =>
-      prevOrders.map(order => {
-        if (order.id === orderId) {
-          // The check for "Cancelled" or "Delivered" is done above,
-          // so if we reach here, the order is updatable.
-          const newStatus = statusCycle[order.status];
-          toast({
-            title: "Order Updated",
-            description: `Order ${orderId} status changed to ${newStatus}.`,
-          });
-          return { ...order, status: newStatus };
-        }
-        return order;
-      })
+      prevOrders.map(order =>
+        order.id === orderId ? { ...order, status: newStatus } : order
+      )
     );
+
+    toast({
+      title: "Order Updated",
+      description: `Order ${orderId} status changed to ${newStatus}.`,
+    });
   };
 
   const handleCancelOrder = (orderId: string) => {
@@ -78,21 +77,20 @@ export default function AdminOrdersPage() {
       });
       return;
     }
+    
+    if (!orderToCancel) return; // Should not happen if button is active
 
     setOrders(prevOrders =>
-      prevOrders.map(order => {
-        if (order.id === orderId) {
-           // The check for "Cancelled" or "Delivered" is done above.
-          toast({
-            title: "Order Cancelled",
-            description: `Order ${orderId} has been cancelled.`,
-            variant: "destructive",
-          });
-          return { ...order, status: "Cancelled" };
-        }
-        return order;
-      })
+      prevOrders.map(order =>
+        order.id === orderId ? { ...order, status: "Cancelled" } : order
+      )
     );
+
+    toast({
+      title: "Order Cancelled",
+      description: `Order ${orderId} has been cancelled.`,
+      variant: "destructive",
+    });
   };
 
   return (
