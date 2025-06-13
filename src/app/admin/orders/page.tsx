@@ -6,35 +6,82 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ListOrdered } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import React, { useState } from 'react'; // Added useState
 
-// Mock data for orders - replace with actual data fetching
-const mockAdminOrders = [
+// Mock data for initial orders
+const initialAdminOrders = [
   { id: "order101", customerName: "Alice Wonderland", date: "2024-05-20", total: 45.50, status: "Preparing", items: 3 },
   { id: "order102", customerName: "Bob The Builder", date: "2024-05-20", total: 22.00, status: "Out for Delivery", items: 1 },
   { id: "order103", customerName: "Charlie Brown", date: "2024-05-19", total: 78.90, status: "Delivered", items: 5 },
   { id: "order104", customerName: "Diana Prince", date: "2024-05-18", total: 15.25, status: "Cancelled", items: 2 },
 ];
 
+type OrderStatus = "Preparing" | "Out for Delivery" | "Delivered" | "Cancelled";
+
+interface AdminOrder {
+  id: string;
+  customerName: string;
+  date: string;
+  total: number;
+  status: OrderStatus;
+  items: number;
+}
+
 export default function AdminOrdersPage() {
   const { toast } = useToast();
-  // In a real app, you'd fetch and manage orders here
-  const orders = mockAdminOrders;
+  const [orders, setOrders] = useState<AdminOrder[]>(initialAdminOrders);
+
+  const statusCycle: Record<OrderStatus, OrderStatus> = {
+    "Preparing": "Out for Delivery",
+    "Out for Delivery": "Delivered",
+    "Delivered": "Delivered", // Stays delivered
+    "Cancelled": "Cancelled" // Stays cancelled
+  };
 
   const handleUpdateOrder = (orderId: string) => {
-    toast({
-      title: "Update Action",
-      description: `Update button clicked for order ${orderId}. (Functionality not yet implemented)`,
-    });
-    // Implement actual update logic here
+    setOrders(prevOrders => 
+      prevOrders.map(order => {
+        if (order.id === orderId && order.status !== "Cancelled" && order.status !== "Delivered") {
+          const newStatus = statusCycle[order.status];
+          toast({
+            title: "Order Updated",
+            description: `Order ${orderId} status changed to ${newStatus}.`,
+          });
+          return { ...order, status: newStatus };
+        }
+        return order;
+      })
+    );
+    if (orders.find(o => o.id === orderId && (o.status === "Cancelled" || o.status === "Delivered"))) {
+      toast({
+        title: "Update Action",
+        description: `Order ${orderId} is already ${orders.find(o => o.id === orderId)?.status} and cannot be updated further.`,
+        variant: "default",
+      });
+    }
   };
 
   const handleCancelOrder = (orderId: string) => {
-    toast({
-      title: "Cancel Action",
-      description: `Cancel button clicked for order ${orderId}. (Functionality not yet implemented)`,
-      variant: "destructive",
-    });
-    // Implement actual cancel logic here
+    setOrders(prevOrders =>
+      prevOrders.map(order => {
+        if (order.id === orderId && order.status !== "Cancelled" && order.status !== "Delivered") {
+          toast({
+            title: "Order Cancelled",
+            description: `Order ${orderId} has been cancelled.`,
+            variant: "destructive",
+          });
+          return { ...order, status: "Cancelled" };
+        }
+        return order;
+      })
+    );
+     if (orders.find(o => o.id === orderId && (o.status === "Cancelled" || o.status === "Delivered"))) {
+      toast({
+        title: "Cancel Action",
+        description: `Order ${orderId} is already ${orders.find(o => o.id === orderId)?.status} and cannot be cancelled.`,
+        variant: "default",
+      });
+    }
   };
 
   return (
@@ -105,8 +152,23 @@ export default function AdminOrdersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Button variant="outline" size="sm" className="mr-2" onClick={() => handleUpdateOrder(order.id)}>Update</Button>
-                        <Button variant="destructive" size="sm" onClick={() => handleCancelOrder(order.id)}>Cancel</Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mr-2" 
+                          onClick={() => handleUpdateOrder(order.id)}
+                          disabled={order.status === 'Delivered' || order.status === 'Cancelled'}
+                        >
+                          Update
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          onClick={() => handleCancelOrder(order.id)}
+                          disabled={order.status === 'Delivered' || order.status === 'Cancelled'}
+                        >
+                          Cancel
+                        </Button>
                       </td>
                     </tr>
                   ))}
