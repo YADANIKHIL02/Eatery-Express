@@ -111,7 +111,9 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent className="flex-grow"></CardContent>
           <CardFooter>
-            <Button variant="outline" disabled className="w-full">Manage Users (Coming Soon)</Button>
+            <Link href="/admin/users" passHref className="w-full">
+              <Button variant="outline" className="w-full">Manage Users</Button>
+            </Link>
           </CardFooter>
         </Card>
         
@@ -127,9 +129,11 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent className="flex-grow"></CardContent>
           <CardFooter>
-            <Button variant="outline" disabled className="w-full">
-                Go to Settings (Coming Soon)
-            </Button>
+            <Link href="/admin/settings" passHref className="w-full">
+              <Button variant="outline" className="w-full">
+                  Go to Settings
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
          <Card className="hover:shadow-lg transition-shadow duration-300 flex flex-col">
@@ -144,9 +148,11 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent className="flex-grow"></CardContent>
           <CardFooter>
-            <Button variant="outline" disabled className="w-full">
-                View Analytics (Coming Soon)
-            </Button>
+            <Link href="/admin/analytics" passHref className="w-full">
+              <Button variant="outline" className="w-full">
+                  View Analytics
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
       </div>
@@ -154,3 +160,4 @@ export default function AdminDashboardPage() {
   );
 }
 
+    
