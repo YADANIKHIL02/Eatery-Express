@@ -3,28 +3,30 @@
 
 import React, { useEffect, useState, use } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, ChevronLeft, Clock, Package, Truck, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { CheckCircle, ChevronLeft, Clock, Package, Truck, Loader2, ShoppingBag, MapPin, PhoneCall } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import AuthGuard from '@/components/guards/AuthGuard'; // Import AuthGuard
+import AuthGuard from '@/components/guards/AuthGuard'; 
+import { Separator } from '@/components/ui/separator';
 
 interface OrderDetailsPageParams {
   params: { id: string }; 
 }
 
-// Mock order details type (adjust as needed)
 interface MockOrderDetails {
   id: string;
   date: string;
   total: number;
-  status: string;
+  status: OrderStatus; // Using a more specific type
   items: Array<{ name: string; quantity: number; price: number }>;
   estimatedDeliveryTime: string;
   deliveryAddress: string;
   contactNumber: string;
 }
+
+type OrderStatus = "Pending" | "Preparing" | "Out for Delivery" | "Delivered" | "Cancelled";
 
 
 async function getOrderDetails(orderId: string): Promise<MockOrderDetails | null> {
@@ -43,28 +45,27 @@ async function getOrderDetails(orderId: string): Promise<MockOrderDetails | null
         contactNumber: '(555) 987-6543',
      }
      if (orderId === 'mock123') {
-        return { ...baseOrder, status: 'Delivered', estimatedDeliveryTime: 'Delivered on May 18, 2024, 7:30 PM' }
+        return { ...baseOrder, status: 'Delivered' as OrderStatus, estimatedDeliveryTime: 'Delivered on May 18, 2024, 7:30 PM' }
      }
-     return { ...baseOrder, status: 'Preparing', estimatedDeliveryTime: 'May 18, 2024, 8:00 PM - 8:30 PM' }
+     return { ...baseOrder, status: 'Preparing' as OrderStatus, estimatedDeliveryTime: 'May 18, 2024, 8:00 PM - 8:30 PM' }
   }
-  // For orders created via checkout (random ID)
-  if (!orderId.startsWith('mock') && orderId.length === 9) { // Assuming random IDs are 9 chars
+  if (!orderId.startsWith('mock') && orderId.length === 9) { 
     return {
       id: orderId,
       date: new Date().toISOString(),
       total: Math.random() * 50 + 20, 
-      status: 'Preparing',
+      status: 'Preparing' as OrderStatus,
       items: [
         { name: 'Personalized Meal Recommendation', quantity: 1, price: 25.00 },
         { name: 'Delivery Fee', quantity: 1, price: 5.00 },
       ],
       estimatedDeliveryTime: new Date(Date.now() + 30 * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      deliveryAddress: '123 Main St, Anytown, USA', // This would come from user's checkout data
-      contactNumber: '(555) 123-4567', // This would come from user's checkout data
+      deliveryAddress: '123 Main St, Anytown, USA', 
+      contactNumber: '(555) 123-4567',
     };
   }
 
-  return null; // Order not found
+  return null; 
 }
 
 export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
@@ -90,34 +91,53 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
     }
   }, [resolvedParams?.id]); 
 
-  const getStatusIcon = (status: string) => {
-    if (status === 'Delivered') return <CheckCircle className="w-6 h-6 text-green-500" />;
-    if (status === 'Out for Delivery') return <Truck className="w-6 h-6 text-blue-500" />;
-    if (status === 'Preparing') return <Clock className="w-6 h-6 text-yellow-500" />;
-    return <Package className="w-6 h-6 text-gray-500" />;
+  const getStatusInfo = (status: OrderStatus) => {
+    switch (status) {
+      case 'Delivered': return { icon: <CheckCircle className="w-5 h-5 text-green-600" />, text: 'Delivered', color: 'text-green-700 bg-green-100/80 border-green-300' };
+      case 'Out for Delivery': return { icon: <Truck className="w-5 h-5 text-blue-600" />, text: 'Out for Delivery', color: 'text-blue-700 bg-blue-100/80 border-blue-300' };
+      case 'Preparing': return { icon: <Clock className="w-5 h-5 text-yellow-600" />, text: 'Preparing', color: 'text-yellow-700 bg-yellow-100/80 border-yellow-300' };
+      case 'Cancelled': return { icon: <Package className="w-5 h-5 text-red-600" />, text: 'Cancelled', color: 'text-red-700 bg-red-100/80 border-red-300' };
+      default: return { icon: <Package className="w-5 h-5 text-muted-foreground" />, text: 'Pending', color: 'text-muted-foreground bg-muted/50 border-border' };
+    }
   };
+
+  const statusInfo = orderDetails ? getStatusInfo(orderDetails.status) : getStatusInfo('Pending');
 
   return (
     <AuthGuard>
       {loading ? (
          <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>
       ) : !orderDetails ? (
-        <div className="text-center py-10">
-          <h1 className="text-2xl font-semibold">Order not found.</h1>
-          <Link href="/orders" passHref>
-            <Button variant="link" className="mt-4">View all orders</Button>
-          </Link>
-        </div>
+        <Card className="text-center py-10 shadow-lg">
+            <CardHeader>
+                <ShoppingBag className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
+                <CardTitle className="text-2xl font-semibold font-headline">Order Not Found</CardTitle>
+                <CardDescription>We couldn't find details for this order. It might have been cancelled or there was an issue.</CardDescription>
+            </CardHeader>
+            <CardFooter className="justify-center">
+                <Link href="/orders" passHref>
+                    <Button variant="outline">
+                    <ChevronLeft className="mr-2 h-4 w-4" /> View All Orders
+                    </Button>
+                </Link>
+            </CardFooter>
+        </Card>
       ) : (
         <div className="space-y-8">
-          <Link href="/orders" passHref>
-            <Button variant="outline">
-              <ChevronLeft className="mr-2 h-4 w-4" /> Back to All Orders
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+            <Link href="/orders" passHref>
+              <Button variant="outline" size="sm">
+                <ChevronLeft className="mr-2 h-4 w-4" /> Back to All Orders
+              </Button>
+            </Link>
+             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${statusInfo.color}`}>
+                {statusInfo.icon}
+                <span>{statusInfo.text}</span>
+            </div>
+          </div>
 
           {isNewOrder && (
-            <Alert variant="default" className="bg-green-50 border-green-300 text-green-700">
+            <Alert variant="default" className="bg-green-50 border-green-400 text-green-700 [&>svg]:text-green-600">
               <CheckCircle className="h-5 w-5" />
               <AlertTitle className="font-semibold">Order Placed Successfully!</AlertTitle>
               <AlertDescription>
@@ -126,75 +146,91 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
             </Alert>
           )}
 
-          <Card className="shadow-lg">
-            <CardHeader>
-              <div className="flex justify-between items-start">
+          <Card className="shadow-xl overflow-hidden">
+            <CardHeader className="bg-muted/30 p-6">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                 <div>
-                  <CardTitle className="font-headline text-2xl">Order #{orderDetails.id}</CardTitle>
-                  <CardDescription>
-                    Placed on: {new Date(orderDetails.date).toLocaleDateString()}
+                  <CardTitle className="font-headline text-2xl md:text-3xl">Order #{orderDetails.id}</CardTitle>
+                  <CardDescription className="text-sm">
+                    Placed on: {new Date(orderDetails.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </CardDescription>
                 </div>
-                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
-                  ${orderDetails.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
-                    orderDetails.status === 'Out for Delivery' ? 'bg-blue-100 text-blue-700' :
-                    orderDetails.status === 'Preparing' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-gray-100 text-gray-700' }
-                `}>
-                  {getStatusIcon(orderDetails.status)}
-                  <span>{orderDetails.status}</span>
+                <div className="text-right">
+                    <p className="text-muted-foreground text-sm">Total Amount</p>
+                    <p className="text-2xl font-bold text-primary">${orderDetails.total.toFixed(2)}</p>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="p-6 space-y-6">
               <div>
-                <h3 className="font-semibold mb-1">Estimated Delivery:</h3>
-                <p className="text-primary">{orderDetails.estimatedDeliveryTime}</p>
+                <h3 className="font-semibold text-lg mb-1">Estimated Delivery:</h3>
+                <p className="text-primary font-medium">{orderDetails.estimatedDeliveryTime}</p>
               </div>
               
+              <Separator />
+
               <div>
-                <h3 className="font-semibold mb-2">Items:</h3>
-                <ul className="space-y-1 text-sm list-disc list-inside pl-1">
+                <h3 className="font-semibold text-lg mb-3">Items Ordered:</h3>
+                <ul className="space-y-3">
                   {orderDetails.items.map((item, index) => (
-                    <li key={index}>{item.name} (x{item.quantity}) - ${item.price.toFixed(2)}</li>
+                    <li key={index} className="flex justify-between items-center text-sm">
+                        <div>
+                            <span className="font-medium">{item.name}</span>
+                            <span className="text-muted-foreground"> (x{item.quantity})</span>
+                        </div>
+                        <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <Separator />
+
+              <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="font-semibold mb-1">Delivery Address:</h3>
+                  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2"><MapPin className="w-5 h-5 text-primary"/>Delivery Address:</h3>
                   <p className="text-sm text-muted-foreground">{orderDetails.deliveryAddress}</p>
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1">Contact:</h3>
+                  <h3 className="font-semibold text-lg mb-2 flex items-center gap-2"><PhoneCall className="w-5 h-5 text-primary"/>Contact:</h3>
                   <p className="text-sm text-muted-foreground">{orderDetails.contactNumber}</p>
                 </div>
               </div>
 
-              <div>
-                <h3 className="font-semibold mb-1">Total Amount:</h3>
-                <p className="text-lg font-bold text-primary">${orderDetails.total.toFixed(2)}</p>
-              </div>
+              <Separator />
               
-              <div className="pt-4">
-                <h3 className="font-semibold mb-3">Order Progress</h3>
-                <div className="flex items-center space-x-2 md:space-x-4 text-xs md:text-sm">
-                  <div className={`flex flex-col items-center text-center ${orderDetails.status === 'Pending' || orderDetails.status === 'Preparing' || orderDetails.status === 'Out for Delivery' || orderDetails.status === 'Delivered' ? 'text-primary' : 'text-muted-foreground'}`}>
-                    <Package className="w-7 h-7 mb-1"/><span>Order Placed</span>
-                  </div>
-                  <div className="flex-grow h-0.5 bg-border"></div>
-                  <div className={`flex flex-col items-center text-center ${orderDetails.status === 'Preparing' || orderDetails.status === 'Out for Delivery' || orderDetails.status === 'Delivered' ? 'text-primary' : 'text-muted-foreground'}`}>
-                    <Clock className="w-7 h-7 mb-1"/><span>Preparing</span>
-                  </div>
-                  <div className="flex-grow h-0.5 bg-border"></div>
-                  <div className={`flex flex-col items-center text-center ${orderDetails.status === 'Out for Delivery' || orderDetails.status === 'Delivered' ? 'text-primary' : 'text-muted-foreground'}`}>
-                    <Truck className="w-7 h-7 mb-1"/><span>Out for Delivery</span>
-                  </div>
-                  <div className="flex-grow h-0.5 bg-border"></div>
-                  <div className={`flex flex-col items-center text-center ${orderDetails.status === 'Delivered' ? 'text-green-500' : 'text-muted-foreground'}`}>
-                    <CheckCircle className="w-7 h-7 mb-1"/><span>Delivered</span>
-                  </div>
+              <div className="pt-2">
+                <h3 className="font-semibold text-lg mb-4">Order Progress</h3>
+                <div className="flex items-start space-x-2 md:space-x-4 text-xs md:text-sm">
+                  {[
+                    { label: 'Order Placed', status: 'Pending', icon: Package },
+                    { label: 'Preparing', status: 'Preparing', icon: Clock },
+                    { label: 'Out for Delivery', status: 'Out for Delivery', icon: Truck },
+                    { label: 'Delivered', status: 'Delivered', icon: CheckCircle },
+                  ].map((step, index, arr) => {
+                    const isActive = orderDetails.status === step.status || 
+                                     (orderDetails.status === 'Delivered' && step.status !== 'Cancelled') ||
+                                     (orderDetails.status === 'Out for Delivery' && (step.status === 'Pending' || step.status === 'Preparing')) ||
+                                     (orderDetails.status === 'Preparing' && step.status === 'Pending');
+                    const isCompleted = (orderDetails.status === 'Delivered' && step.status !== 'Cancelled') ||
+                                        (orderDetails.status === 'Out for Delivery' && (step.status === 'Pending' || step.status === 'Preparing')) ||
+                                        (orderDetails.status === 'Preparing' && step.status === 'Pending' && orderDetails.status !== step.status);
+
+                    const IconComponent = step.icon;
+                    return (
+                      <React.Fragment key={step.label}>
+                        <div className={`flex flex-col items-center text-center ${isActive || isCompleted ? 'text-primary' : 'text-muted-foreground'}`}>
+                          <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isActive || isCompleted ? 'border-primary bg-primary/10' : 'border-border'}`}>
+                            <IconComponent className={`w-5 h-5 ${isActive || isCompleted ? 'text-primary' : ''}`} />
+                          </div>
+                          <span className={`mt-1.5 font-medium ${isActive || isCompleted ? 'text-primary' : ''}`}>{step.label}</span>
+                        </div>
+                        {index < arr.length - 1 && (
+                          <div className={`flex-grow h-0.5 mt-5 ${isCompleted || (isActive && step.status !== orderDetails.status) ? 'bg-primary' : 'bg-border'}`}></div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -205,3 +241,5 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
     </AuthGuard>
   );
 }
+
+    

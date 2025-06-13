@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, Home, Phone, User, Loader2, Wallet, Smartphone } from 'lucide-react';
+import { CreditCard, Home, Phone, User, Loader2, Wallet, Smartphone, ShoppingBag } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AuthGuard from '@/components/guards/AuthGuard';
 
@@ -149,56 +149,56 @@ export default function CheckoutPage() {
   return (
     <AuthGuard>
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold font-headline mb-8 text-center">Checkout</h1>
+        <h1 className="text-3xl font-bold font-headline mb-8 text-center">Secure Checkout</h1>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="md:col-span-1 shadow-lg">
-              <CardHeader>
-                <CardTitle className="font-headline text-xl flex items-center gap-2"><Home className="w-5 h-5 text-primary"/>Delivery Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField control={form.control} name="fullName" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="address" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Street Address</FormLabel>
-                    <FormControl><Input placeholder="123 Main St" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField control={form.control} name="city" render={({ field }) => (
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            <div className="md:col-span-1 space-y-8">
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="font-headline text-xl flex items-center gap-2"><Home className="w-5 h-5 text-primary"/>Delivery Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <FormField control={form.control} name="fullName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
-                      <FormControl><Input placeholder="Anytown" {...field} /></FormControl>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField control={form.control} name="postalCode" render={({ field }) => (
+                  <FormField control={form.control} name="address" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Postal Code</FormLabel>
-                      <FormControl><Input placeholder="12345" {...field} /></FormControl>
+                      <FormLabel>Street Address</FormLabel>
+                      <FormControl><Input placeholder="123 Main St" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                </div>
-                <FormField control={form.control} name="phoneNumber" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl><Input type="tel" placeholder="(555) 123-4567" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-              </CardContent>
-            </Card>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField control={form.control} name="city" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl><Input placeholder="Anytown" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="postalCode" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Postal Code</FormLabel>
+                        <FormControl><Input placeholder="12345" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+                  <FormField control={form.control} name="phoneNumber" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl><Input type="tel" placeholder="(555) 123-4567" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </CardContent>
+              </Card>
 
-            <div className="space-y-8">
               <Card className="shadow-lg">
                 <CardHeader>
                   <CardTitle className="font-headline text-xl flex items-center gap-2"><CreditCard className="w-5 h-5 text-primary"/>Payment Method</CardTitle>
@@ -212,7 +212,7 @@ export default function CheckoutPage() {
                           <FormItem className="space-y-3">
                           <FormControl>
                               <div className="space-y-2">
-                                  <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                  <Label className="flex items-center gap-3 p-4 border rounded-lg hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer transition-colors">
                                       <Input
                                         type="radio"
                                         name={field.name}
@@ -221,9 +221,10 @@ export default function CheckoutPage() {
                                         onChange={() => field.onChange("creditCard")}
                                         className="sr-only"
                                       />
-                                      <CreditCard className="w-5 h-5" /> Credit Card
+                                      <CreditCard className="w-6 h-6 text-primary" /> 
+                                      <span className="font-medium">Credit Card</span>
                                   </Label>
-                                  <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                  <Label className="flex items-center gap-3 p-4 border rounded-lg hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer transition-colors">
                                       <Input
                                         type="radio"
                                         name={field.name}
@@ -232,9 +233,10 @@ export default function CheckoutPage() {
                                         onChange={() => field.onChange("cashOnDelivery")}
                                         className="sr-only"
                                       />
-                                      <Wallet className="w-5 h-5" /> Cash on Delivery
+                                      <Wallet className="w-6 h-6 text-primary" /> 
+                                      <span className="font-medium">Cash on Delivery</span>
                                   </Label>
-                                  <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                  <Label className="flex items-center gap-3 p-4 border rounded-lg hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer transition-colors">
                                       <Input
                                         type="radio"
                                         name={field.name}
@@ -243,7 +245,8 @@ export default function CheckoutPage() {
                                         onChange={() => field.onChange("upi")}
                                         className="sr-only"
                                       />
-                                      <Smartphone className="w-5 h-5" /> UPI Payment
+                                      <Smartphone className="w-6 h-6 text-primary" /> 
+                                      <span className="font-medium">UPI Payment</span>
                                   </Label>
                               </div>
                           </FormControl>
@@ -253,7 +256,7 @@ export default function CheckoutPage() {
                   />
 
                   {selectedPaymentMethod === "creditCard" && (
-                    <>
+                    <div className="space-y-4 pt-2">
                       <FormField control={form.control} name="cardNumber" render={({ field }) => (
                         <FormItem>
                           <FormLabel>Card Number</FormLabel>
@@ -277,52 +280,56 @@ export default function CheckoutPage() {
                           </FormItem>
                         )} />
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {selectedPaymentMethod === "upi" && (
-                    <FormField
-                      control={form.control}
-                      name="upiId"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>UPI ID</FormLabel>
-                          <FormControl>
-                            <Input placeholder="yourname@bank" {...field} />
-                          </FormControl>
-                           <FormDescription>
-                            Enter your UPI ID for payment.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <div className="space-y-4 pt-2">
+                        <FormField
+                          control={form.control}
+                          name="upiId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>UPI ID</FormLabel>
+                              <FormControl>
+                                <Input placeholder="yourname@bank" {...field} />
+                              </FormControl>
+                              <FormDescription>
+                                Enter your UPI ID for payment.
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                   )}
                   
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground text-center pt-2">
                     Secure payment processing by DineGo.
                   </p>
                 </CardContent>
               </Card>
-
-              <Card className="shadow-lg">
+            </div>
+            
+            <div className="md:col-span-1">
+              <Card className="shadow-lg sticky top-24">
                 <CardHeader>
-                  <CardTitle className="font-headline text-xl">Order Summary</CardTitle>
+                  <CardTitle className="font-headline text-xl flex items-center gap-2"><ShoppingBag className="w-5 h-5 text-primary"/>Order Summary</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-3">
                   {cartItems.map(item => (
                     <div key={item.id} className="flex justify-between text-sm">
-                      <span>{item.name} x {item.quantity}</span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <span>{item.name} (x{item.quantity})</span>
+                      <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                   <Separator />
                   <div className="flex justify-between text-sm">
-                    <span>Subtotal</span>
+                    <span className="text-muted-foreground">Subtotal</span>
                     <span>${cartTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Delivery Fee</span>
+                    <span className="text-muted-foreground">Delivery Fee</span>
                     <span>${deliveryFee.toFixed(2)}</span>
                   </div>
                   <Separator />
@@ -334,7 +341,7 @@ export default function CheckoutPage() {
                 <CardFooter>
                   <Button type="submit" size="lg" className="w-full" disabled={isProcessing || cartItems.length === 0}>
                     {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {isProcessing ? "Processing..." : "Place Order"}
+                    {isProcessing ? "Processing..." : `Pay $${totalAmount.toFixed(2)}`}
                   </Button>
                 </CardFooter>
               </Card>
@@ -345,3 +352,5 @@ export default function CheckoutPage() {
     </AuthGuard>
   );
 }
+
+    

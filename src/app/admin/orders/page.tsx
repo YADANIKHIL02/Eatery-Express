@@ -4,19 +4,20 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, ListOrdered } from "lucide-react";
+import { ChevronLeft, ListOrdered, Package, Truck, CheckCircle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState } from 'react';
+import { Badge } from "@/components/ui/badge";
 
 // Mock data for initial orders
 const initialAdminOrders = [
-  { id: "order101", customerName: "Alice Wonderland", date: "2024-05-20", total: 45.50, status: "Preparing", items: 3 },
-  { id: "order102", customerName: "Bob The Builder", date: "2024-05-20", total: 22.00, status: "Out for Delivery", items: 1 },
-  { id: "order103", customerName: "Charlie Brown", date: "2024-05-19", total: 78.90, status: "Delivered", items: 5 },
-  { id: "order104", customerName: "Diana Prince", date: "2024-05-18", total: 15.25, status: "Cancelled", items: 2 },
+  { id: "order101", customerName: "Alice Wonderland", date: "2024-05-20", total: 45.50, status: "Preparing" as OrderStatus, items: 3 },
+  { id: "order102", customerName: "Bob The Builder", date: "2024-05-20", total: 22.00, status: "Out for Delivery" as OrderStatus, items: 1 },
+  { id: "order103", customerName: "Charlie Brown", date: "2024-05-19", total: 78.90, status: "Delivered" as OrderStatus, items: 5 },
+  { id: "order104", customerName: "Diana Prince", date: "2024-05-18", total: 15.25, status: "Cancelled" as OrderStatus, items: 2 },
 ];
 
-type OrderStatus = "Preparing" | "Out for Delivery" | "Delivered" | "Cancelled";
+type OrderStatus = "Pending" | "Preparing" | "Out for Delivery" | "Delivered" | "Cancelled";
 
 interface AdminOrder {
   id: string;
@@ -27,30 +28,49 @@ interface AdminOrder {
   items: number;
 }
 
+const getStatusBadgeVariant = (status: OrderStatus): "default" | "secondary" | "destructive" | "outline" => {
+  switch (status) {
+    case "Delivered": return "default"; // Default is primary
+    case "Preparing": return "secondary";
+    case "Out for Delivery": return "outline"; // Use outline for a distinct look, or create a blueish variant
+    case "Cancelled": return "destructive";
+    default: return "secondary";
+  }
+};
+const getStatusIcon = (status: OrderStatus) => {
+    switch (status) {
+      case "Delivered": return <CheckCircle className="mr-1.5 h-3.5 w-3.5" />;
+      case "Preparing": return <Package className="mr-1.5 h-3.5 w-3.5" />;
+      case "Out for Delivery": return <Truck className="mr-1.5 h-3.5 w-3.5" />;
+      case "Cancelled": return <XCircle className="mr-1.5 h-3.5 w-3.5" />;
+      default: return <Package className="mr-1.5 h-3.5 w-3.5" />;
+    }
+};
+
+
 export default function AdminOrdersPage() {
   const { toast } = useToast();
   const [orders, setOrders] = useState<AdminOrder[]>(initialAdminOrders);
 
   const statusCycle: Record<OrderStatus, OrderStatus> = {
+    "Pending": "Preparing",
     "Preparing": "Out for Delivery",
     "Out for Delivery": "Delivered",
-    "Delivered": "Delivered", // Stays delivered
-    "Cancelled": "Cancelled" // Stays cancelled
+    "Delivered": "Delivered", 
+    "Cancelled": "Cancelled" 
   };
 
   const handleUpdateOrder = (orderId: string) => {
     const orderToUpdate = orders.find(o => o.id === orderId);
 
-    if (orderToUpdate && (orderToUpdate.status === "Cancelled" || orderToUpdate.status === "Delivered")) {
+    if (!orderToUpdate || orderToUpdate.status === "Cancelled" || orderToUpdate.status === "Delivered") {
       toast({
         title: "Update Action",
-        description: `Order ${orderId} is already ${orderToUpdate.status} and cannot be updated further.`,
+        description: `Order ${orderId} is already ${orderToUpdate?.status} and cannot be updated further.`,
         variant: "default",
       });
       return;
     }
-
-    if (!orderToUpdate) return; // Should not happen if button is active
 
     const newStatus = statusCycle[orderToUpdate.status];
 
@@ -69,17 +89,15 @@ export default function AdminOrdersPage() {
   const handleCancelOrder = (orderId: string) => {
     const orderToCancel = orders.find(o => o.id === orderId);
 
-    if (orderToCancel && (orderToCancel.status === "Cancelled" || orderToCancel.status === "Delivered")) {
+    if (!orderToCancel || orderToCancel.status === "Cancelled" || orderToCancel.status === "Delivered") {
       toast({
         title: "Cancel Action",
-        description: `Order ${orderId} is already ${orderToCancel.status} and cannot be cancelled.`,
+        description: `Order ${orderId} is already ${orderToCancel?.status} and cannot be cancelled.`,
         variant: "default",
       });
       return;
     }
     
-    if (!orderToCancel) return; // Should not happen if button is active
-
     setOrders(prevOrders =>
       prevOrders.map(order =>
         order.id === orderId ? { ...order, status: "Cancelled" } : order
@@ -150,15 +168,10 @@ export default function AdminOrdersPage() {
                        <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground text-center">{order.items}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">${order.total.toFixed(2)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          order.status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                          order.status === 'Preparing' ? 'bg-yellow-100 text-yellow-800' :
-                          order.status === 'Out for Delivery' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {order.status}
-                        </span>
+                        <Badge variant={getStatusBadgeVariant(order.status)} className="capitalize">
+                           {getStatusIcon(order.status)}
+                           {order.status}
+                        </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <Button 
@@ -190,3 +203,5 @@ export default function AdminOrdersPage() {
     </div>
   );
 }
+
+    
