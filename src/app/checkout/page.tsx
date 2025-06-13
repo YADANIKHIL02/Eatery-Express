@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, Home, Phone, User, Loader2 } from 'lucide-react';
+import { CreditCard, Home, Phone, User, Loader2, Wallet } from 'lucide-react';
 import { useState } from 'react';
 
 const checkoutSchema = z.object({
@@ -23,7 +23,7 @@ const checkoutSchema = z.object({
   city: z.string().min(2, "City is required."),
   postalCode: z.string().min(5, "Valid postal code is required."),
   phoneNumber: z.string().min(10, "Valid phone number is required."),
-  paymentMethod: z.enum(["creditCard", "paypal"], { required_error: "Please select a payment method." }), // Placeholder
+  paymentMethod: z.enum(["creditCard", "paypal", "cashOnDelivery"], { required_error: "Please select a payment method." }),
   cardNumber: z.string().optional(), // Simplified
   expiryDate: z.string().optional(), // Simplified
   cvv: z.string().optional(), // Simplified
@@ -45,10 +45,10 @@ export default function CheckoutPage() {
       city: "",
       postalCode: "",
       phoneNumber: "",
-      paymentMethod: "creditCard", 
-      cardNumber: "", 
-      expiryDate: "", 
-      cvv: "", 
+      paymentMethod: "creditCard",
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
     },
   });
 
@@ -137,7 +137,6 @@ export default function CheckoutPage() {
                  <CardDescription>This is a simplified payment section for demo purposes.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Simplified Payment Section */}
                 <FormField
                     control={form.control}
                     name="paymentMethod"
@@ -145,10 +144,14 @@ export default function CheckoutPage() {
                         <FormItem className="space-y-3">
                         <FormControl>
                             {/* In a real app, use @radix-ui/react-radio-group */}
-                            <div>
+                            <div className="space-y-2">
                                 <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
-                                    <Input type="radio" value="creditCard" {...field} checked={field.value === "creditCard"} className="sr-only"/>
+                                    <Input type="radio" value="creditCard" {...field} checked={field.value === "creditCard"} onChange={field.onChange} className="sr-only"/>
                                     <CreditCard className="w-5 h-5" /> Credit Card
+                                </Label>
+                                <Label className="flex items-center gap-2 p-3 border rounded-md hover:bg-accent/50 has-[input:checked]:bg-primary/10 has-[input:checked]:border-primary cursor-pointer">
+                                    <Input type="radio" value="cashOnDelivery" {...field} checked={field.value === "cashOnDelivery"} onChange={field.onChange} className="sr-only"/>
+                                    <Wallet className="w-5 h-5" /> Cash on Delivery
                                 </Label>
                             </div>
                         </FormControl>
