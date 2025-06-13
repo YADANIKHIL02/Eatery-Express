@@ -62,14 +62,14 @@ export default function LoginPage() {
           <div className="flex items-center justify-center gap-2 mb-3">
              <Link href="/" className="flex items-center gap-2 text-2xl font-semibold text-primary">
                 <Utensils className="h-7 w-7" />
-                <span className="font-headline">Feastly</span>
+                <span className="font-headline">QuickPlate</span>
             </Link>
           </div>
           <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
             <LogIn className="h-6 w-6 text-primary" /> Login to your Account
           </CardTitle>
           <CardDescription>
-            Access your Feastly account to continue.
+            Access your QuickPlate account to continue.
           </CardDescription>
         </CardHeader>
         <Form {...form}>
@@ -135,3 +135,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

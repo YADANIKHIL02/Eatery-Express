@@ -305,7 +305,7 @@ export default function CheckoutPage() {
                   )}
                   
                   <p className="text-xs text-muted-foreground text-center pt-2">
-                    Secure payment processing by Feastly.
+                    Secure payment processing by QuickPlate.
                   </p>
                 </CardContent>
               </Card>
@@ -352,3 +352,4 @@ export default function CheckoutPage() {
     </AuthGuard>
   );
 }
+

@@ -34,7 +34,7 @@ export default function AdminSettingsPage() {
         <CardContent>
           <p className="text-muted-foreground">
             The site settings management functionality is currently under development. 
-            This section will allow administrators to configure various aspects of the DineGo platform.
+            This section will allow administrators to configure various aspects of the QuickPlate platform.
           </p>
           <div className="mt-6">
             <h3 className="font-semibold text-lg mb-2">Potential Settings (Examples):</h3>
@@ -53,3 +53,4 @@ export default function AdminSettingsPage() {
     </div>
   );
 }
+

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import AuthGuard from '@/components/guards/AuthGuard';
 
 export const metadata: Metadata = {
-  title: 'Admin Panel - Feastly',
-  description: 'Manage Feastly operations.',
+  title: 'Admin Panel - QuickPlate',
+  description: 'Manage QuickPlate operations.',
 };
 
 export default function AdminLayout({
@@ -35,10 +35,11 @@ export default function AdminLayout({
         </main>
         <footer className="py-4 border-t bg-card">
           <p className="text-center text-xs text-muted-foreground">
-            Feastly Admin Panel &copy; {new Date().getFullYear()}
+            QuickPlate Admin Panel &copy; {new Date().getFullYear()}
           </p>
         </footer>
       </div>
     </AuthGuard>
   );
 }
+

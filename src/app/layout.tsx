@@ -7,7 +7,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
-  title: 'Feastly',
+  title: 'QuickPlate',
   description: 'Delicious food, delivered fast.',
 };
 
@@ -36,3 +36,4 @@ export default function RootLayout({
     </html>
   );
 }
+

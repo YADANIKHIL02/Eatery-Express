@@ -34,7 +34,7 @@ export default function AdminRestaurantsPage() {
         <CardContent>
           <p className="text-muted-foreground">
             The restaurant management functionality is currently under development. 
-            This section will allow administrators to control all aspects of restaurant listings on the DineGo platform.
+            This section will allow administrators to control all aspects of restaurant listings on the QuickPlate platform.
           </p>
           <div className="mt-6">
             <h3 className="font-semibold text-lg mb-2">Planned Features:</h3>
@@ -52,3 +52,4 @@ export default function AdminRestaurantsPage() {
     </div>
   );
 }
+
