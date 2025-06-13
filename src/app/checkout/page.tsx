@@ -300,7 +300,7 @@ export default function CheckoutPage() {
                   )}
                   
                   <p className="text-sm text-muted-foreground">
-                    Secure payment processing by Eatery Express.
+                    Secure payment processing by DineGo.
                   </p>
                 </CardContent>
               </Card>

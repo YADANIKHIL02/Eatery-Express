@@ -70,7 +70,7 @@ export default function SignupPage() {
             <CardTitle className="font-headline text-3xl text-center">Sign Up</CardTitle>
           </div>
           <CardDescription className="text-center">
-            Create your Eatery Express account.
+            Create your DineGo account.
           </CardDescription>
         </CardHeader>
         <Form {...form}>

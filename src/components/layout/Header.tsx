@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Home, ListOrdered, ShoppingCart, Utensils, Shield, LogIn, LogOut, UserCircle } from 'lucide-react';
+import { Home, ListOrdered, ShoppingCart, Utensils, Shield, LogIn, LogOut, UserCircle, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,6 +43,10 @@ export default function Header() {
 
   const getUserInitials = (email?: string | null) => {
     if (!email) return 'U';
+    const nameParts = user?.displayName?.split(' ') || [];
+    if (nameParts.length >= 2) {
+      return nameParts[0][0].toUpperCase() + nameParts[1][0].toUpperCase();
+    }
     return email.substring(0, 2).toUpperCase();
   }
 
@@ -51,7 +55,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-xl font-semibold text-primary">
           <Utensils className="h-7 w-7" />
-          <span className="font-headline">Eatery Express</span>
+          <span className="font-headline">DineGo</span>
         </Link>
         <nav className="flex items-center gap-1 md:gap-2">
           <Link href="/" passHref>
@@ -105,7 +109,7 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => router.push('/profile')}> {/* Placeholder for profile page */}
+                  <DropdownMenuItem onClick={() => router.push('/profile')}>
                     <UserCircle className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>

@@ -1,3 +1,4 @@
+
 import RestaurantCard from '@/components/common/RestaurantCard';
 import SearchBar from '@/components/common/SearchBar';
 import RecommendationForm from '@/components/sections/RecommendationForm';
@@ -15,7 +16,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <Utensils className="h-16 w-16 text-primary mx-auto mb-4" />
           <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4 text-primary">
-            Welcome to Eatery Express
+            Welcome to DineGo
           </h1>
           <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto">
             Discover delicious meals from your favorite local restaurants, delivered right to your doorstep.

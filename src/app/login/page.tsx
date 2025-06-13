@@ -64,7 +64,7 @@ export default function LoginPage() {
             <CardTitle className="font-headline text-3xl text-center">Login</CardTitle>
           </div>
           <CardDescription className="text-center">
-            Access your Eatery Express account.
+            Access your DineGo account.
           </CardDescription>
         </CardHeader>
         <Form {...form}>
