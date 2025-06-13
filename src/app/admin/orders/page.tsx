@@ -1,8 +1,11 @@
 
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ListOrdered } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data for orders - replace with actual data fetching
 const mockAdminOrders = [
@@ -13,8 +16,26 @@ const mockAdminOrders = [
 ];
 
 export default function AdminOrdersPage() {
+  const { toast } = useToast();
   // In a real app, you'd fetch and manage orders here
   const orders = mockAdminOrders;
+
+  const handleUpdateOrder = (orderId: string) => {
+    toast({
+      title: "Update Action",
+      description: `Update button clicked for order ${orderId}. (Functionality not yet implemented)`,
+    });
+    // Implement actual update logic here
+  };
+
+  const handleCancelOrder = (orderId: string) => {
+    toast({
+      title: "Cancel Action",
+      description: `Cancel button clicked for order ${orderId}. (Functionality not yet implemented)`,
+      variant: "destructive",
+    });
+    // Implement actual cancel logic here
+  };
 
   return (
     <div className="space-y-6">
@@ -84,8 +105,8 @@ export default function AdminOrdersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Button variant="outline" size="sm" className="mr-2">Update</Button>
-                        <Button variant="destructive" size="sm">Cancel</Button>
+                        <Button variant="outline" size="sm" className="mr-2" onClick={() => handleUpdateOrder(order.id)}>Update</Button>
+                        <Button variant="destructive" size="sm" onClick={() => handleCancelOrder(order.id)}>Cancel</Button>
                       </td>
                     </tr>
                   ))}
