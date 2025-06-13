@@ -43,13 +43,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  if (loading && typeof window !== 'undefined') { // Avoid SSR rendering of loader if possible initially
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-background">
-        <Loader2 className="h-16 w-16 animate-spin text-primary" />
-      </div>
-    );
-  }
+  // Removed the conditional loader here to prevent hydration mismatch.
+  // AuthGuard will handle showing a loader if necessary within the main layout.
+  // if (loading && typeof window !== 'undefined') { 
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen bg-background">
+  //       <Loader2 className="h-16 w-16 animate-spin text-primary" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <AuthContext.Provider value={{ user, loading, isAdmin }}>
@@ -65,3 +67,4 @@ export const useAuth = () => {
   }
   return context;
 };
+
