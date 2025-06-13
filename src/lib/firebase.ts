@@ -15,21 +15,18 @@ const firebaseConfig = {
 // Client-side check to help debug if the API key isn't loaded
 if (typeof window !== 'undefined' && !firebaseConfig.apiKey) {
   console.warn(
-    "Firebase API Key is missing or not loaded. Critical checks:\n1. Is '.env.local' in the project root?\n2. Is NEXT_PUBLIC_FIREBASE_API_KEY set correctly in '.env.local'?\n3. Did you restart the Next.js development server after changes to '.env.local'?"
+    "Firebase API Key is missing or not loaded from environment variables. Critical checks:\n" +
+    "1. Is the '.env.local' file present in the project root directory (not inside 'src')?\n" +
+    "2. Is 'NEXT_PUBLIC_FIREBASE_API_KEY' spelled correctly and set to your actual Firebase API key in '.env.local'? (e.g., NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...)\n" +
+    "3. Did you RESTART your Next.js development server (e.g., 'npm run dev') after creating or modifying the '.env.local' file?\n" +
+    "The API key Firebase is currently seeing is: ", firebaseConfig.apiKey === undefined ? "undefined" : `"${firebaseConfig.apiKey}"`
   );
 }
 
 let app: FirebaseApp;
 if (!getApps().length) {
-  // Ensure config values are present before initializing, especially apiKey
-  if (!firebaseConfig.apiKey) {
-    // This will prevent Firebase from initializing if the key is truly missing,
-    // though the "auth/api-key-not-valid" suggests it's initializing with a bad/empty key.
-    console.error("Firebase initialization failed: API key is missing. Halting Firebase setup.");
-    // To avoid throwing an error that breaks the app here, we might let it proceed
-    // and let Firebase SDK throw its own more specific error.
-    // For now, the console.warn above is the primary feedback mechanism for missing keys.
-  }
+  // The Firebase SDK will throw an error if apiKey is missing or invalid during initializeApp.
+  // The warning above is to help users debug why it might be missing.
   app = initializeApp(firebaseConfig);
 } else {
   app = getApps()[0];
