@@ -10,6 +10,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto1',
     category: 'Main Course',
+    imageHint: 'pizza cheese',
   },
   {
     id: 'dish2',
@@ -19,6 +20,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto1',
     category: 'Main Course',
+    imageHint: 'pizza pepperoni',
   },
   {
     id: 'dish3',
@@ -28,6 +30,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto1',
     category: 'Appetizer',
+    imageHint: 'salad greens',
   },
   {
     id: 'dish4',
@@ -37,6 +40,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto2',
     category: 'Main Course',
+    imageHint: 'pasta italian',
   },
   {
     id: 'dish5',
@@ -46,6 +50,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto2',
     category: 'Appetizer',
+    imageHint: 'appetizer italian',
   },
   {
     id: 'dish6',
@@ -55,6 +60,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto3',
     category: 'Main Course',
+    imageHint: 'chicken japanese',
   },
   {
     id: 'dish7',
@@ -64,6 +70,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto3',
     category: 'Main Course',
+    imageHint: 'sushi japanese',
   },
   {
     id: 'dish8',
@@ -73,6 +80,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto3',
     category: 'Appetizer',
+    imageHint: 'soup japanese',
   },
   {
     id: 'dish9',
@@ -82,6 +90,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto4',
     category: 'Main Course',
+    imageHint: 'burger american',
   },
   {
     id: 'dish10',
@@ -91,6 +100,7 @@ export const mockDishes: Dish[] = [
     imageUrl: 'https://placehold.co/600x400.png',
     restaurantId: 'resto4',
     category: 'Side Dish',
+    imageHint: 'fries side',
   },
 ];
 
@@ -101,7 +111,8 @@ export const mockRestaurants: Restaurant[] = [
     cuisine: 'Italian',
     rating: 4.5,
     deliveryTime: '25-35 min',
-    imageUrl: 'https://placehold.co/300x200.png',
+    imageUrl: 'https://placehold.co/600x400.png', // Standardized size
+    imageHint: 'italian pizza',
     menu: mockDishes.filter(dish => dish.restaurantId === 'resto1'),
   },
   {
@@ -110,7 +121,8 @@ export const mockRestaurants: Restaurant[] = [
     cuisine: 'Italian',
     rating: 4.2,
     deliveryTime: '30-40 min',
-    imageUrl: 'https://placehold.co/300x200.png',
+    imageUrl: 'https://placehold.co/600x400.png', // Standardized size
+    imageHint: 'italian pasta',
     menu: mockDishes.filter(dish => dish.restaurantId === 'resto2'),
   },
   {
@@ -119,7 +131,8 @@ export const mockRestaurants: Restaurant[] = [
     cuisine: 'Japanese',
     rating: 4.8,
     deliveryTime: '35-45 min',
-    imageUrl: 'https://placehold.co/300x200.png',
+    imageUrl: 'https://placehold.co/600x400.png', // Standardized size
+    imageHint: 'japanese sushi',
     menu: mockDishes.filter(dish => dish.restaurantId === 'resto3'),
   },
   {
@@ -128,7 +141,8 @@ export const mockRestaurants: Restaurant[] = [
     cuisine: 'American',
     rating: 4.0,
     deliveryTime: '20-30 min',
-    imageUrl: 'https://placehold.co/300x200.png',
+    imageUrl: 'https://placehold.co/600x400.png', // Standardized size
+    imageHint: 'american burger',
     menu: mockDishes.filter(dish => dish.restaurantId === 'resto4'),
   },
 ];

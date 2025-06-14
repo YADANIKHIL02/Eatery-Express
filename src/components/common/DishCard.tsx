@@ -33,7 +33,7 @@ export default function DishCard({ dish }: DishCardProps) {
           alt={dish.name}
           layout="fill"
           objectFit="cover"
-          data-ai-hint="food dish"
+          data-ai-hint={dish.imageHint || "food dish"}
         />
       </div>
       <CardHeader className="pb-2">

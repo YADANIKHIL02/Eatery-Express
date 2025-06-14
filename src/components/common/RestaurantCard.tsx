@@ -20,7 +20,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
             alt={restaurant.name}
             layout="fill"
             objectFit="cover"
-            data-ai-hint="restaurant food"
+            data-ai-hint={restaurant.imageHint || "restaurant food"}
           />
         </div>
         <CardHeader className="pb-3">

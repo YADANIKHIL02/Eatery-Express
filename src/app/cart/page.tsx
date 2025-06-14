@@ -40,7 +40,13 @@ export default function CartPage() {
           {cartItems.map(item => (
             <Card key={item.id} className="flex items-center p-4 gap-4 shadow-sm">
               <div className="relative w-20 h-20 rounded-md overflow-hidden shrink-0">
-                <Image src={item.imageUrl} alt={item.name} layout="fill" objectFit="cover" data-ai-hint="food item" />
+                <Image 
+                  src={item.imageUrl || 'https://placehold.co/200x200.png'} 
+                  alt={item.name} 
+                  layout="fill" 
+                  objectFit="cover" 
+                  data-ai-hint={item.imageHint || "food item"}
+                />
               </div>
               <div className="flex-grow">
                 <h2 className="text-lg font-semibold">{item.name}</h2>

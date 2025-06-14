@@ -1,3 +1,4 @@
+
 export interface Dish {
   id: string;
   name: string;
@@ -6,6 +7,7 @@ export interface Dish {
   imageUrl: string;
   restaurantId: string;
   category: string;
+  imageHint?: string;
 }
 
 export interface Restaurant {
@@ -15,6 +17,7 @@ export interface Restaurant {
   rating: number;
   deliveryTime: string;
   imageUrl: string;
+  imageHint?: string;
   menu?: Dish[]; // Optional: menu might be loaded separately
 }
 
