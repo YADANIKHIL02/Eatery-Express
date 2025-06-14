@@ -43,9 +43,10 @@ export default function CartPage() {
                 <Image 
                   src={item.imageUrl || 'https://placehold.co/200x200.png'} 
                   alt={item.name} 
-                  layout="fill" 
-                  objectFit="cover" 
+                  fill
+                  className="object-cover"
                   data-ai-hint={item.imageHint || "food item"}
+                  sizes="80px"
                 />
               </div>
               <div className="flex-grow">

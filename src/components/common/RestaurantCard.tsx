@@ -18,9 +18,10 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
           <Image
             src={restaurant.imageUrl}
             alt={restaurant.name}
-            layout="fill"
-            objectFit="cover"
+            fill
+            className="object-cover"
             data-ai-hint={restaurant.imageHint || "restaurant food"}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
         <CardHeader className="pb-3">

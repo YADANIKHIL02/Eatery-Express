@@ -50,10 +50,10 @@ export default async function RestaurantPage({ params }: RestaurantPageParams) {
         <Image
           src={restaurant.imageUrl || 'https://placehold.co/1200x600.png'}
           alt={restaurant.name}
-          layout="fill"
-          objectFit="cover"
-          className="brightness-75"
+          fill
+          className="object-cover brightness-75"
           data-ai-hint={restaurant.imageHint || "restaurant interior"}
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex flex-col justify-end p-6 md:p-8">
           <h1 className="text-3xl md:text-4xl font-bold font-headline text-white mb-2 drop-shadow-md">{restaurant.name}</h1>

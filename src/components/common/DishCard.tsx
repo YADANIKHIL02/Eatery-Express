@@ -31,9 +31,10 @@ export default function DishCard({ dish }: DishCardProps) {
         <Image
           src={dish.imageUrl}
           alt={dish.name}
-          layout="fill"
-          objectFit="cover"
+          fill
+          className="object-cover"
           data-ai-hint={dish.imageHint || "food dish"}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <CardHeader className="pb-2">
