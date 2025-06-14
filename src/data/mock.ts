@@ -192,7 +192,6 @@ export const mockDishes: Dish[] = [
     category: 'Appetizer',
     imageHint: 'appetizer italian',
   },
-  // Pizzas for Pasta Perfection (resto2)
   {
     id: 'dish_pp_01',
     name: 'Classic Margherita (Pasta Perfection)',
@@ -343,7 +342,6 @@ export const mockDishes: Dish[] = [
     category: 'Appetizer',
     imageHint: 'edamame beans',
   },
-  // Pizzas for Sushi Central (resto3)
   {
     id: 'dish_sc_01',
     name: 'Teriyaki Chicken Pizza (Sushi Central)',
@@ -464,7 +462,107 @@ export const mockDishes: Dish[] = [
     category: 'Side Dish',
     imageHint: 'fries side',
   },
-  // New dishes for Taco Town
+  // Pizzas for Burger Barn (resto4)
+  {
+    id: 'dish_bb_01',
+    name: 'The Barnyard Classic Pizza (Burger Barn)',
+    description: 'A hearty pizza with ground beef, bacon, cheddar cheese, and a BBQ sauce drizzle.',
+    price: 17.50,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza beef',
+  },
+  {
+    id: 'dish_bb_02',
+    name: 'Cheeseburger Pizza (Burger Barn)',
+    description: 'All the flavors of a cheeseburger on a pizza! Ground beef, onions, pickles, cheddar, and special sauce.',
+    price: 18.00,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza cheeseburger',
+  },
+  {
+    id: 'dish_bb_03',
+    name: 'Spicy Jalapeño Popper Pizza (Burger Barn)',
+    description: 'Cream cheese base, jalapeños, bacon bits, mozzarella, and cheddar.',
+    price: 16.80,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza jalapeno',
+  },
+  {
+    id: 'dish_bb_04',
+    name: 'BBQ Pulled Pork Pizza (Burger Barn)',
+    description: 'Slow-cooked pulled pork, tangy BBQ sauce, red onions, and mozzarella.',
+    price: 18.50,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza pork',
+  },
+  {
+    id: 'dish_bb_05',
+    name: 'Onion Ring Supreme Pizza (Burger Barn)',
+    description: 'Crispy onion rings, bacon, mozzarella, and a creamy horseradish sauce.',
+    price: 17.20,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza onion',
+  },
+  {
+    id: 'dish_bb_06',
+    name: 'Mushroom Swiss Burger Pizza (Burger Barn)',
+    description: 'Sautéed mushrooms, Swiss cheese, ground beef, and a garlic aioli base.',
+    price: 17.90,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza mushroom',
+  },
+  {
+    id: 'dish_bb_07',
+    name: 'BLT Pizza (Burger Barn)',
+    description: 'Bacon, lettuce, tomato, and mozzarella on a ranch dressing base. (Lettuce and tomato added after baking).',
+    price: 16.50,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza blt',
+  },
+  {
+    id: 'dish_bb_08',
+    name: 'Chili Cheese Fry Pizza (Burger Barn)',
+    description: 'Beef chili, crispy fries, cheddar cheese, and mozzarella. A comfort food explosion!',
+    price: 18.80,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza chili',
+  },
+  {
+    id: 'dish_bb_09',
+    name: 'Breakfast Bonanza Pizza (Burger Barn)',
+    description: 'Scrambled eggs, bacon, sausage, cheddar, and mozzarella on a light gravy base.',
+    price: 19.20,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza breakfast',
+  },
+  {
+    id: 'dish_bb_10',
+    name: 'Buffalo Ranch Chicken Pizza (Burger Barn)',
+    description: 'Grilled chicken tossed in buffalo sauce, mozzarella, and a generous drizzle of ranch.',
+    price: 17.60,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto4',
+    category: 'Pizza',
+    imageHint: 'pizza chicken',
+  },
   {
     id: 'dish15',
     name: 'Classic Beef Tacos',
@@ -495,7 +593,6 @@ export const mockDishes: Dish[] = [
     category: 'Appetizer',
     imageHint: 'guacamole chips',
   },
-  // New dishes for Curry Corner
   {
     id: 'dish18',
     name: 'Butter Chicken',
@@ -590,6 +687,3 @@ export const mockRestaurants: Restaurant[] = [
     menu: mockDishes.filter(dish => dish.restaurantId === 'resto6'),
   },
 ];
-
-
-    
