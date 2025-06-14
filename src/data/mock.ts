@@ -53,6 +53,26 @@ export const mockDishes: Dish[] = [
     imageHint: 'bread garlic',
   },
   {
+    id: 'dish21',
+    name: 'BBQ Chicken Pizza',
+    description: 'Tangy BBQ sauce, grilled chicken, red onions, and cilantro.',
+    price: 16.50,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto1',
+    category: 'Main Course',
+    imageHint: 'pizza chicken',
+  },
+  {
+    id: 'dish22',
+    name: 'Hawaiian Pizza',
+    description: 'A classic mix of ham, pineapple, and mozzarella cheese.',
+    price: 15.50,
+    imageUrl: 'https://placehold.co/600x400.png',
+    restaurantId: 'resto1',
+    category: 'Main Course',
+    imageHint: 'pizza pineapple',
+  },
+  {
     id: 'dish4',
     name: 'Spaghetti Carbonara',
     description: 'Creamy pasta with pancetta and Parmesan cheese',
@@ -268,3 +288,4 @@ export const mockRestaurants: Restaurant[] = [
     menu: mockDishes.filter(dish => dish.restaurantId === 'resto6'),
   },
 ];
+
