@@ -169,7 +169,7 @@ export const mockDishes: Dish[] = [
     category: 'Side Dish',
     imageHint: 'fries side',
   },
-  
+
   // Taco Town (resto5)
   {
     id: 'dish15',
