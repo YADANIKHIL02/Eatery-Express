@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import AuthGuard from '@/components/guards/AuthGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { UserCircle, Mail, Edit3, Shield, LockKeyhole, Loader2, CalendarDays, Info, CheckCircle, XCircle } from 'lucide-react';
+import { UserCircle, Mail, Edit3, Shield, LockKeyhole, Loader2, CalendarDays, Info, CheckCircle, XCircle, ClipboardUser, Settings2, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
@@ -109,7 +109,10 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent className="p-6 space-y-6">
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-foreground/90">Account Details</h3>
+              <h3 className="text-lg font-semibold mb-3 text-foreground/90 flex items-center gap-2">
+                <ClipboardUser className="w-5 h-5 text-primary" />
+                Account Details
+              </h3>
               <Separator className="mb-4"/>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
@@ -160,7 +163,10 @@ export default function ProfilePage() {
             <Separator className="my-6"/>
             
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-foreground/90">Manage Account</h3>
+              <h3 className="text-lg font-semibold mb-3 text-foreground/90 flex items-center gap-2">
+                <Settings2 className="w-5 h-5 text-primary" />
+                Manage Account
+              </h3>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button variant="outline" onClick={handleOpenEditProfileDialog} className="w-full sm:w-auto justify-start sm:justify-center">
                   <Edit3 className="mr-2 h-4 w-4" /> Edit Profile
@@ -194,7 +200,10 @@ export default function ProfilePage() {
                <>
                 <Separator className="my-6"/>
                 <div>
-                    <h3 className="text-lg font-semibold mb-3 text-foreground/90">Admin Area</h3>
+                    <h3 className="text-lg font-semibold mb-3 text-foreground/90 flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-primary" />
+                        Admin Area
+                    </h3>
                     <Button variant="default" onClick={() => router.push('/admin')} className="w-full sm:w-auto justify-start sm:justify-center">
                         <Shield className="mr-2 h-4 w-4" /> Go to Admin Panel
                     </Button>
@@ -209,4 +218,3 @@ export default function ProfilePage() {
     </AuthGuard>
   );
 }
-

@@ -4,7 +4,7 @@
 import React, { useEffect, useState, use } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, ChevronLeft, Clock, Package, Truck, Loader2, ShoppingBag, MapPin, PhoneCall } from 'lucide-react';
+import { CheckCircle, ChevronLeft, Clock, Package, Truck, Loader2, ShoppingBag, MapPin, PhoneCall, ClipboardList, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -163,14 +163,14 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div>
-                <h3 className="font-semibold text-lg mb-1">Estimated Delivery:</h3>
+                <h3 className="font-semibold text-lg mb-1 flex items-center gap-2"><Clock className="w-5 h-5 text-primary" />Estimated Delivery:</h3>
                 <p className="text-primary font-medium">{orderDetails.estimatedDeliveryTime}</p>
               </div>
               
               <Separator />
 
               <div>
-                <h3 className="font-semibold text-lg mb-3">Items Ordered:</h3>
+                <h3 className="font-semibold text-lg mb-3 flex items-center gap-2"><Package className="w-5 h-5 text-primary" />Items Ordered:</h3>
                 <ul className="space-y-3">
                   {orderDetails.items.map((item, index) => (
                     <li key={index} className="flex justify-between items-center text-sm">
@@ -200,7 +200,7 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
               <Separator />
               
               <div className="pt-2">
-                <h3 className="font-semibold text-lg mb-4">Order Progress</h3>
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-primary" />Order Progress</h3>
                 <div className="flex items-start space-x-2 md:space-x-4 text-xs md:text-sm">
                   {[
                     { label: 'Order Placed', status: 'Pending', icon: Package },
@@ -241,5 +241,3 @@ export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
     </AuthGuard>
   );
 }
-
-    

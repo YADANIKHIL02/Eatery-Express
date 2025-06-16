@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-br from-primary/10 to-accent/5 rounded-xl">
+      <section className="text-center py-20 bg-gradient-to-br from-primary/20 via-background to-accent/10 rounded-xl shadow-lg">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-center text-primary">
             QuickPlate: Your next meal, delivered.
