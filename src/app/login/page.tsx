@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address."),
+  identifier: z.string().min(1, "Email or Phone Number is required."),
   password: z.string().min(6, "Password must be at least 6 characters."),
 });
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      identifier: '',
       password: '',
     },
   });
@@ -43,13 +43,19 @@ export default function LoginPage() {
     setIsLoading(true);
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      await signInWithEmailAndPassword(auth, data.identifier, data.password);
       toast({ title: "Login Successful!", description: "Welcome back!" });
       const redirectUrl = searchParams.get('redirect') || '/';
       router.push(redirectUrl);
     } catch (e: any) {
-      setError(e.message || "Failed to login. Please check your credentials.");
-      toast({ variant: "destructive", title: "Login Failed", description: e.message || "Please check your credentials." });
+      let friendlyMessage = "Failed to login. Please check your credentials.";
+      if (e.code === 'auth/invalid-email') {
+        friendlyMessage = "Invalid email format. If using a phone number, ensure it's registered with an email."
+      } else if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        friendlyMessage = "Invalid credentials. Please check your email/phone and password."
+      }
+      setError(friendlyMessage);
+      toast({ variant: "destructive", title: "Login Failed", description: friendlyMessage });
     } finally {
       setIsLoading(false);
     }
@@ -77,12 +83,12 @@ export default function LoginPage() {
             <CardContent className="space-y-6">
               <FormField
                 control={form.control}
-                name="email"
+                name="identifier"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel>Email or Phone Number</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="you@example.com" {...field} />
+                      <Input type="text" placeholder="you@example.com or 123-456-7890" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
