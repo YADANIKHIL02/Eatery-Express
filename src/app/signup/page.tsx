@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 const signupSchema = z.object({
-  email: z.string().email("Invalid email address."),
+  email: z.string().min(1, "Email or Phone Number is required."),
   password: z.string().min(6, "Password must be at least 6 characters."),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters."),
 }).refine(data => data.password === data.confirmPassword, {
@@ -54,8 +54,14 @@ export default function SignupPage() {
       const redirectUrl = searchParams.get('redirect') || '/login'; 
       router.push(redirectUrl);
     } catch (e: any) {
-      setError(e.message || "Failed to sign up. Please try again.");
-      toast({ variant: "destructive", title: "Signup Failed", description: e.message || "An unexpected error occurred." });
+      let friendlyMessage = "Failed to sign up. Please try again.";
+      if (e.code === 'auth/invalid-email') {
+        friendlyMessage = "Invalid email format. Please enter a valid email address for sign up.";
+      } else if (e.code === 'auth/email-already-in-use') {
+        friendlyMessage = "This email is already in use. Please try logging in or use a different email.";
+      }
+      setError(friendlyMessage);
+      toast({ variant: "destructive", title: "Signup Failed", description: friendlyMessage });
     } finally {
       setIsLoading(false);
     }
@@ -86,9 +92,9 @@ export default function SignupPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email Address</FormLabel>
+                    <FormLabel>Email or Phone Number</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="you@example.com" {...field} />
+                      <Input type="text" placeholder="you@example.com or 123-456-7890" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
