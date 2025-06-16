@@ -38,7 +38,7 @@ export default function CartPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
           {cartItems.map(item => (
-            <Card key={item.id} className="flex items-center p-4 gap-4 shadow-sm">
+            <Card key={item.id} className="flex items-center p-4 gap-4 shadow-md hover:shadow-lg transition-shadow duration-300">
               <div className="relative w-20 h-20 rounded-md overflow-hidden shrink-0">
                 <Image 
                   src={item.imageUrl || 'https://placehold.co/200x200.png'} 
@@ -112,3 +112,4 @@ export default function CartPage() {
     </div>
   );
 }
+

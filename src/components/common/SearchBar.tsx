@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Input } from "@/components/ui/input";
@@ -24,7 +25,7 @@ export default function SearchBar({ onSearch }: { onSearch?: (query: string) => 
       <Input
         type="search"
         placeholder="Search for dishes or cuisines..."
-        className="pl-10 pr-4 py-3 text-base rounded-lg border-2 focus:border-primary focus:ring-primary"
+        className="pl-10 pr-4 py-3 text-base rounded-lg border-2 focus:border-primary focus:ring-primary transition-colors duration-150 ease-in-out"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
