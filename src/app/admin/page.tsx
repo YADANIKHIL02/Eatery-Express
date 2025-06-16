@@ -24,7 +24,7 @@ export default function AdminDashboardPage() {
         <AlertTriangle className="h-5 w-5" />
         <AlertTitle className="font-semibold">Security Notice</AlertTitle>
         <AlertDescription>
-          This admin panel uses client-side email check for admin access. For production, implement Firebase Custom Claims for robust security.
+          This admin panel uses a client-side email check for admin access. Currently, logging in with the email <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@quickplate.com</code> grants admin privileges. For production, implement Firebase Custom Claims for robust security.
         </AlertDescription>
       </Alert>
 
