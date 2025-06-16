@@ -26,7 +26,7 @@ export default function DishCard({ dish }: DishCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden h-full flex flex-col">
+    <Card className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
       <div className="relative w-full h-40">
         <Image
           src={dish.imageUrl}
