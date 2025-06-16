@@ -5,10 +5,21 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, Users, Edit, Trash2, UserCheck, UserX } from "lucide-react";
+import { ChevronLeft, Users, Edit, Trash2, UserCheck, UserX, ShieldAlert, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type UserRole = "Admin" | "User";
 type UserStatus = "Active" | "Suspended" | "Pending";
@@ -39,11 +50,35 @@ export default function AdminUsersPage() {
   };
 
   const handleDeleteUser = (userId: string) => {
-    // In a real app, this would involve a confirmation dialog and an API call
-    // For now, we'll just filter the user out of the local state for demo purposes
-    // setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
-    toast({ title: "Delete User", description: `Placeholder for deleting user ${userId}. Feature not implemented.`, variant: "destructive" });
+    setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+    toast({ title: "User Deleted", description: `User ${userId} has been removed.`, variant: "destructive" });
   };
+
+  const handleToggleUserStatus = (userId: string) => {
+    setUsers(prevUsers =>
+      prevUsers.map(user => {
+        if (user.id === userId) {
+          if (user.role === 'Admin') {
+            toast({ title: "Action Denied", description: "Admin user status cannot be changed in this demo.", variant: "destructive" });
+            return user;
+          }
+          let newStatus: UserStatus;
+          let toastMessage: string;
+          if (user.status === 'Active') {
+            newStatus = 'Suspended';
+            toastMessage = `User ${user.email} has been suspended.`;
+          } else { // Suspended or Pending
+            newStatus = 'Active';
+            toastMessage = `User ${user.email} has been activated.`;
+          }
+          toast({ title: "User Status Updated", description: toastMessage });
+          return { ...user, status: newStatus };
+        }
+        return user;
+      })
+    );
+  };
+
 
   const getRoleBadgeVariant = (role: UserRole): "default" | "secondary" | "outline" => {
     if (role === "Admin") return "default"; // Primary color
@@ -51,9 +86,9 @@ export default function AdminUsersPage() {
   };
 
   const getStatusBadgeVariant = (status: UserStatus): "default" | "secondary" | "destructive" | "outline" => {
-    if (status === "Active") return "default"; // Primary color (often green-like in themes)
+    if (status === "Active") return "default"; 
     if (status === "Suspended") return "destructive";
-    if (status === "Pending") return "outline"; // Yellow-like or distinct
+    if (status === "Pending") return "outline"; 
     return "secondary";
   };
   
@@ -61,7 +96,8 @@ export default function AdminUsersPage() {
     switch (status) {
       case "Active": return <UserCheck className="mr-1.5 h-3.5 w-3.5" />;
       case "Suspended": return <UserX className="mr-1.5 h-3.5 w-3.5" />;
-      default: return <UserCheck className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />; // Default or pending
+      case "Pending": return <AlertCircle className="mr-1.5 h-3.5 w-3.5" />;
+      default: return <UserCheck className="mr-1.5 h-3.5 w-3.5 text-muted-foreground" />;
     }
   };
 
@@ -80,7 +116,7 @@ export default function AdminUsersPage() {
       </div>
       
       <CardDescription>
-        View, manage, and edit user accounts on the platform.
+        View, manage, and edit user accounts on the platform. (Mock data operations)
       </CardDescription>
 
       {users.length === 0 ? (
@@ -120,6 +156,7 @@ export default function AdminUsersPage() {
                       <TableCell>{user.displayName || 'N/A'}</TableCell>
                       <TableCell>
                         <Badge variant={getRoleBadgeVariant(user.role)} className="capitalize">
+                          {user.role === 'Admin' && <ShieldAlert className="mr-1.5 h-3.5 w-3.5" />}
                           {user.role}
                         </Badge>
                       </TableCell>
@@ -130,15 +167,41 @@ export default function AdminUsersPage() {
                            {user.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="icon" className="hover:text-primary mr-1" onClick={() => handleEditUser(user.id)}>
-                          <Edit className="h-4 w-4" />
-                          <span className="sr-only">Edit User</span>
+                      <TableCell className="text-right space-x-1">
+                        <Button variant="ghost" size="sm" className="hover:text-primary" onClick={() => handleEditUser(user.id)}>
+                          <Edit className="h-4 w-4 mr-1" /> Edit
                         </Button>
-                        <Button variant="ghost" size="icon" className="hover:text-destructive" onClick={() => handleDeleteUser(user.id)}>
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete User</span>
+                        <Button 
+                          variant={user.status === 'Active' ? "outline" : "default"} 
+                          size="sm" 
+                          onClick={() => handleToggleUserStatus(user.id)}
+                          disabled={user.role === 'Admin'}
+                          className={user.status === 'Active' ? "hover:bg-yellow-500/10 hover:text-yellow-600" : "hover:bg-green-500/10 hover:text-green-600"}
+                        >
+                          {user.status === 'Active' ? <UserX className="h-4 w-4 mr-1"/> : <UserCheck className="h-4 w-4 mr-1"/>}
+                          {user.status === 'Active' ? 'Suspend' : 'Activate'}
                         </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="hover:text-destructive" disabled={user.role === 'Admin'}>
+                              <Trash2 className="h-4 w-4 mr-1" /> Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete user {user.email}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteUser(user.id)} className="bg-destructive hover:bg-destructive/90">
+                                Delete User
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </TableCell>
                     </TableRow>
                   ))}
