@@ -95,12 +95,8 @@ export default function LoginPage() {
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Password</FormLabel>
-                      <Link href="/forgot-password" // Placeholder link, can be adjusted later
+                      <Link href="/forgot-password"
                         className="text-sm text-primary hover:underline font-medium"
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent navigation for now
-                          toast({title: "Forgot Password", description: "This feature is coming soon!"});
-                        }}
                       >
                         Forgot password?
                       </Link>
