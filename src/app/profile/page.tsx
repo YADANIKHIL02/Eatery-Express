@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import AuthGuard from '@/components/guards/AuthGuard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { UserCircle, Mail, Edit3, Shield, LockKeyhole, Loader2, CalendarDays, Info, CheckCircle, XCircle, ClipboardUser, Settings2, Edit } from 'lucide-react';
+import { UserCircle, Mail, Edit3, Shield, LockKeyhole, Loader2, CalendarDays, Info, CheckCircle, XCircle, Clipboard, Settings2, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
@@ -110,7 +110,7 @@ export default function ProfilePage() {
           <CardContent className="p-6 space-y-6">
             <div>
               <h3 className="text-lg font-semibold mb-3 text-foreground/90 flex items-center gap-2">
-                <ClipboardUser className="w-5 h-5 text-primary" />
+                <Clipboard className="w-5 h-5 text-primary" />
                 Account Details
               </h3>
               <Separator className="mb-4"/>
