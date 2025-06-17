@@ -6,6 +6,7 @@ import RecommendationForm from '@/components/sections/RecommendationForm';
 import { mockRestaurants } from '@/data/mock';
 import type { Restaurant } from '@/types';
 import { Utensils } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HomePage() {
   const restaurants: Restaurant[] = mockRestaurants; // In a real app, fetch this data
@@ -46,7 +47,22 @@ export default function HomePage() {
         </h2>
         <RecommendationForm />
       </section>
+
+      {/* Example URL Section */}
+      <section className="text-center py-10">
+        <h3 className="text-xl font-semibold mb-4">Example External Link</h3>
+        <p className="text-muted-foreground">
+          Here's an example of how you might link to an external website:
+        </p>
+        <a 
+          href="https://example.com" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-primary hover:underline font-medium"
+        >
+          Visit Example.com
+        </a>
+      </section>
     </div>
   );
 }
-
