@@ -167,41 +167,43 @@ export default function AdminUsersPage() {
                            {user.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-1">
-                        <Button variant="ghost" size="sm" className="hover:text-primary" onClick={() => handleEditUser(user.id)}>
-                          <Edit className="h-4 w-4 mr-1" /> Edit
-                        </Button>
-                        <Button 
-                          variant={user.status === 'Active' ? "outline" : "default"} 
-                          size="sm" 
-                          onClick={() => handleToggleUserStatus(user.id)}
-                          disabled={user.role === 'Admin'}
-                          className={user.status === 'Active' ? "hover:bg-yellow-500/10 hover:text-yellow-600" : "hover:bg-green-500/10 hover:text-green-600"}
-                        >
-                          {user.status === 'Active' ? <UserX className="h-4 w-4 mr-1"/> : <UserCheck className="h-4 w-4 mr-1"/>}
-                          {user.status === 'Active' ? 'Suspend' : 'Activate'}
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="hover:text-destructive" disabled={user.role === 'Admin'}>
-                              <Trash2 className="h-4 w-4 mr-1" /> Delete
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete user {user.email}? This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDeleteUser(user.id)} className="bg-destructive hover:bg-destructive/90">
-                                Delete User
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                      <TableCell className="text-right">
+                        <div className="flex flex-col sm:flex-row sm:justify-end gap-1">
+                          <Button variant="ghost" size="sm" className="hover:text-primary" onClick={() => handleEditUser(user.id)}>
+                            <Edit className="h-4 w-4 mr-1" /> Edit
+                          </Button>
+                          <Button 
+                            variant={user.status === 'Active' ? "outline" : "default"} 
+                            size="sm" 
+                            onClick={() => handleToggleUserStatus(user.id)}
+                            disabled={user.role === 'Admin'}
+                            className={user.status === 'Active' ? "hover:bg-yellow-500/10 hover:text-yellow-600" : "hover:bg-green-500/10 hover:text-green-600"}
+                          >
+                            {user.status === 'Active' ? <UserX className="h-4 w-4 mr-1"/> : <UserCheck className="h-4 w-4 mr-1"/>}
+                            {user.status === 'Active' ? 'Suspend' : 'Activate'}
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="hover:text-destructive" disabled={user.role === 'Admin'}>
+                                <Trash2 className="h-4 w-4 mr-1" /> Delete
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete user {user.email}? This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteUser(user.id)} className="bg-destructive hover:bg-destructive/90">
+                                  Delete User
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

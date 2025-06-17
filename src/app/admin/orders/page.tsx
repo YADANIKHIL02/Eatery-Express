@@ -179,33 +179,35 @@ export default function AdminOrdersPage() {
                            {order.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-1 whitespace-nowrap">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="hover:text-primary"
-                          onClick={() => toast({title: "View Order", description: "Navigating to order details (placeholder)"})}
-                        >
-                          <Eye className="h-4 w-4 mr-1" /> View
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="hover:text-yellow-600"
-                          onClick={() => handleUpdateOrder(order.id)}
-                          disabled={order.status === 'Delivered' || order.status === 'Cancelled'}
-                        >
-                          <Edit className="h-4 w-4 mr-1" /> Update Status
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="hover:text-destructive"
-                          onClick={() => handleCancelOrder(order.id)}
-                          disabled={order.status === 'Delivered' || order.status === 'Cancelled'}
-                        >
-                          <XCircle className="h-4 w-4 mr-1" /> Cancel
-                        </Button>
+                      <TableCell className="text-right">
+                        <div className="flex flex-col sm:flex-row sm:justify-end gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:text-primary"
+                            onClick={() => toast({title: "View Order", description: "Navigating to order details (placeholder)"})}
+                          >
+                            <Eye className="h-4 w-4 mr-1" /> View
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:text-yellow-600"
+                            onClick={() => handleUpdateOrder(order.id)}
+                            disabled={order.status === 'Delivered' || order.status === 'Cancelled'}
+                          >
+                            <Edit className="h-4 w-4 mr-1" /> Update Status
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="hover:text-destructive"
+                            onClick={() => handleCancelOrder(order.id)}
+                            disabled={order.status === 'Delivered' || order.status === 'Cancelled'}
+                          >
+                            <XCircle className="h-4 w-4 mr-1" /> Cancel
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

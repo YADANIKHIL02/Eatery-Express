@@ -64,12 +64,12 @@ export default function AdminRestaurantsPage() {
         <h1 className="text-3xl font-bold font-headline flex items-center gap-2">
           <Utensils className="w-8 h-8 text-primary" /> Restaurant Management
         </h1>
-        <div className="flex gap-2">
-            <Button variant="outline">
+        <div className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" className="w-full sm:w-auto">
                 <PlusCircle className="mr-2 h-4 w-4" /> Add New Restaurant
             </Button>
-            <Link href="/admin" passHref>
-            <Button variant="outline">
+            <Link href="/admin" passHref className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto">
                 <ChevronLeft className="mr-2 h-4 w-4" /> Back to Admin
             </Button>
             </Link>
@@ -120,39 +120,41 @@ export default function AdminRestaurantsPage() {
                           {restaurant.isActive ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right space-x-1">
-                        <Button variant="ghost" size="sm" className="hover:text-primary" onClick={() => handleEditRestaurant(restaurant.id)}>
-                          <Edit className="h-4 w-4 mr-1" /> Edit
-                        </Button>
-                        <Button 
-                          variant={restaurant.isActive ? "outline" : "default"} 
-                          size="sm" 
-                          onClick={() => handleToggleActive(restaurant.id)}
-                          className={restaurant.isActive ? "hover:bg-yellow-500/10 hover:text-yellow-600" : "hover:bg-green-500/10 hover:text-green-600"}
-                        >
-                          {restaurant.isActive ? 'Deactivate' : 'Activate'}
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="hover:text-destructive">
-                              <Trash2 className="h-4 w-4 mr-1" /> Delete
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to delete restaurant {restaurant.name}? This action cannot be undone (for this mock setup).
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDeleteRestaurant(restaurant.id)} className="bg-destructive hover:bg-destructive/90">
-                                Delete Restaurant
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                      <TableCell className="text-right">
+                        <div className="flex flex-col sm:flex-row sm:justify-end gap-1">
+                          <Button variant="ghost" size="sm" className="hover:text-primary" onClick={() => handleEditRestaurant(restaurant.id)}>
+                            <Edit className="h-4 w-4 mr-1" /> Edit
+                          </Button>
+                          <Button 
+                            variant={restaurant.isActive ? "outline" : "default"} 
+                            size="sm" 
+                            onClick={() => handleToggleActive(restaurant.id)}
+                            className={restaurant.isActive ? "hover:bg-yellow-500/10 hover:text-yellow-600" : "hover:bg-green-500/10 hover:text-green-600"}
+                          >
+                            {restaurant.isActive ? 'Deactivate' : 'Activate'}
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="sm" className="hover:text-destructive">
+                                <Trash2 className="h-4 w-4 mr-1" /> Delete
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete restaurant {restaurant.name}? This action cannot be undone (for this mock setup).
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteRestaurant(restaurant.id)} className="bg-destructive hover:bg-destructive/90">
+                                  Delete Restaurant
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
