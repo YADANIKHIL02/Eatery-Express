@@ -1,4 +1,5 @@
 
+import { Button } from '@/components/ui/button';
 import RestaurantCard from '@/components/common/RestaurantCard';
 import SearchBar from '@/components/common/SearchBar';
 import RecommendationForm from '@/components/sections/RecommendationForm';
@@ -22,6 +23,13 @@ export default function HomePage() {
           </p>
           <div className="max-w-2xl mx-auto">
             <SearchBar />
+          </div>
+          <div className="mt-6 text-center">
+            <a href="https://nextjs.org/docs" target="_blank" rel="noopener noreferrer" className="inline-block">
+              <Button variant="link" className="text-lg text-primary hover:text-primary/80 hover:underline">
+                Learn more about Next.js
+              </Button>
+            </a>
           </div>
         </div>
       </section>
@@ -48,4 +56,3 @@ export default function HomePage() {
     </div>
   );
 }
-
