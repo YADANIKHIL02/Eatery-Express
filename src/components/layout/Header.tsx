@@ -55,7 +55,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-xl font-semibold text-primary">
           <Utensils className="h-7 w-7" />
-          <span className="font-headline">QuickPlate</span>
+          <span className="font-headline">Eatery Express</span>
         </Link>
         <nav className="flex items-center gap-1 md:gap-2">
           <Link href="/" passHref>

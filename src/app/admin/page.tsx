@@ -24,7 +24,7 @@ export default function AdminDashboardPage() {
         <AlertTriangle className="h-5 w-5" />
         <AlertTitle className="font-semibold">Security Notice</AlertTitle>
         <AlertDescription>
-          This admin panel uses a client-side email check for admin access. For this demo, admin privileges are granted to the email address specified in the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">ADMIN_EMAIL</code> constant within the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">src/context/AuthContext.tsx</code> file (currently set to <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@quickplate.com</code>). You can modify this constant if you wish to test with a different admin email. For robust security in a production environment, Firebase Custom Claims should be implemented.
+          This admin panel uses a client-side email check for admin access. For this demo, admin privileges are granted to the email address specified in the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">ADMIN_EMAIL</code> constant within the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">src/context/AuthContext.tsx</code> file (currently set to <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@eateryexpress.com</code>). You can modify this constant if you wish to test with a different admin email. For robust security in a production environment, Firebase Custom Claims should be implemented.
         </AlertDescription>
       </Alert>
 

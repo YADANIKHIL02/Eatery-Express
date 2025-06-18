@@ -74,14 +74,14 @@ export default function SignupPage() {
           <div className="flex items-center justify-center gap-2 mb-3">
              <Link href="/" className="flex items-center gap-2 text-2xl font-semibold text-primary">
                 <Utensils className="h-7 w-7" />
-                <span className="font-headline">QuickPlate</span>
+                <span className="font-headline">Eatery Express</span>
             </Link>
           </div>
           <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
             <UserPlus className="h-6 w-6 text-primary" /> Create your Account
           </CardTitle>
           <CardDescription>
-            Join QuickPlate to order delicious food.
+            Join Eatery Express to order delicious food.
           </CardDescription>
         </CardHeader>
         <Form {...form}>

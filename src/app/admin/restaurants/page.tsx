@@ -93,7 +93,7 @@ export default function AdminRestaurantsPage() {
         <Card className="shadow-md">
           <CardHeader>
             <CardTitle>All Restaurants ({restaurants.length})</CardTitle>
-            <CardDescription>A list of all restaurants on the QuickPlate platform.</CardDescription>
+            <CardDescription>A list of all restaurants on the Eatery Express platform.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
