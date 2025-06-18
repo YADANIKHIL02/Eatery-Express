@@ -4,10 +4,13 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { ListOrdered, Utensils, Users, AlertTriangle, Settings, BarChart3 } from "lucide-react";
+import { ListOrdered, Utensils, Users, AlertTriangle, Settings, BarChart3, UserCircle } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from '@/context/AuthContext';
+import { Badge } from '@/components/ui/badge';
 
 export default function AdminDashboardPage() {
+  const { user } = useAuth();
   const stats = {
     pendingOrders: 5, 
     totalRestaurants: 12,
@@ -18,6 +21,12 @@ export default function AdminDashboardPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <h1 className="text-3xl font-bold font-headline">Admin Dashboard</h1>
+        {user && user.email && (
+          <Badge variant="outline" className="text-sm font-normal py-1.5 px-3">
+            <UserCircle className="mr-2 h-4 w-4" />
+            Admin: {user.email}
+          </Badge>
+        )}
       </div>
       
       <Alert variant="destructive" className="bg-yellow-50 border-yellow-400 text-yellow-800 [&>svg]:text-yellow-600 shadow-sm">
@@ -159,3 +168,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
