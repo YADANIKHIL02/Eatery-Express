@@ -1,6 +1,6 @@
 
 "use client";
-
+import { Suspense } from 'react';
 import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -46,6 +46,11 @@ export default function SignupPage() {
   });
 
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    // The useSearchParams hook is accessed here, so this part needs to be
+    // within a Suspense boundary to allow the component to be statically rendered
+    // while deferring the part that depends on search params to the client.
+    const redirectUrl = searchParams.get('redirect') || '/login';
+
     setIsLoading(true);
     setError(null);
     try {
@@ -53,7 +58,7 @@ export default function SignupPage() {
       toast({ title: "Signup Successful!", description: "Welcome! You can now login." });
       const redirectUrl = searchParams.get('redirect') || '/login'; 
       router.push(redirectUrl);
-    } catch (e: any) {
+    } catch (e: any) { // Consider using a more specific error type if possible
       let friendlyMessage = "Failed to sign up. Please try again.";
       if (e.code === 'auth/invalid-email') {
         friendlyMessage = "Invalid email format. Please enter a valid email address for sign up.";
@@ -68,68 +73,70 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-200px)] py-12 px-4">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-             <Link href="/" className="flex items-center gap-2 text-2xl font-semibold text-primary">
-                <Utensils className="h-7 w-7" />
-                <span className="font-headline">Eatery Express</span>
-            </Link>
-          </div>
-          <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
-            <UserPlus className="h-6 w-6 text-primary" /> Create your Account
-          </CardTitle>
-          <CardDescription>
-            Join Eatery Express to order delicious food.
-          </CardDescription>
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email or Phone Number</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="you@example.com or 123-456-7890" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input 
-                          type={showPassword ? "text" : "password"} 
-                          placeholder="••••••••" 
-                          {...field} 
-                          className="pr-10"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <Suspense fallback={<div>Loading...</div>}>
+      {/* Wrap the main content with Suspense */}
+      <div className="flex justify-center items-center min-h-[calc(100vh-200px)] py-12 px-4">
+        <Card className="w-full max-w-md shadow-xl">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-3">
+               <Link href="/" className="flex items-center gap-2 text-2xl font-semibold text-primary">
+                  <Utensils className="h-7 w-7" />
+                  <span className="font-headline">Eatery Express</span>
+              </Link>
+            </div>
+            <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
+              <UserPlus className="h-6 w-6 text-primary" /> Create your Account
+            </CardTitle>
+            <CardDescription>
+              Join Eatery Express to order delicious food.
+            </CardDescription>
+          </CardHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <CardContent className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email or Phone Number</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="you@example.com or 123-456-7890" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="••••••••"
+                            {...field}
+                            className="pr-10"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               <FormField
                 control={form.control}
                 name="confirmPassword"
@@ -169,12 +176,12 @@ export default function SignupPage() {
               </Button>
               <p className="text-sm text-muted-foreground text-center">
                 Already have an account? <Link href="/login" className="text-primary hover:underline font-medium">Log in</Link>
-              </p>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
-    </div>
+              </p> {/* Note: The Link component here is fine outside Suspense as it's a standard HTML anchor */}
+             </CardFooter>
+           </form>
+         </Form>
+       </Card>
+     </div>
+    </Suspense>
   );
 }
-
