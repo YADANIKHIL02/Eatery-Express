@@ -1,13 +1,9 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    appDir: true, // This enables the app directory, which is required for build caching
-  },
-  /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // experimental: {
+  //   appDir: true, // This enables the app directory, which is required for build caching
+  // },
   eslint: {
     ignoreDuringBuilds: true,
   },
