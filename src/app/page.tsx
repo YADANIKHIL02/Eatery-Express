@@ -1,12 +1,24 @@
+'use client';
 
 import { Button } from '@/components/ui/button';
 import RestaurantCard from '@/components/common/RestaurantCard';
 import SearchBar from '@/components/common/SearchBar';
-import RecommendationForm from '@/components/sections/RecommendationForm';
+// import RecommendationForm from '@/components/sections/RecommendationForm'; // Original import
 import { mockRestaurants } from '@/data/mock';
 import type { Restaurant } from '@/types';
-import { Utensils } from 'lucide-react';
+import { Utensils, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const RecommendationForm = dynamic(() => import('@/components/sections/RecommendationForm'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex justify-center items-center py-10">
+      <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
+      <p>Loading recommendations...</p>
+    </div>
+  ),
+});
 
 export default function HomePage() {
   const restaurants: Restaurant[] = mockRestaurants; // In a real app, fetch this data
@@ -39,7 +51,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-      
+
       {/* Recommendation Engine Section */}
       <section id="recommendations" className="py-10">
          <h2 className="text-3xl font-bold font-headline mb-8 text-center">
@@ -54,10 +66,10 @@ export default function HomePage() {
         <p className="text-muted-foreground">
           Here's an example of how you might link to an external website:
         </p>
-        <a 
-          href="https://example.com" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://example.com"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-primary hover:underline font-medium"
         >
           Visit Example.com
