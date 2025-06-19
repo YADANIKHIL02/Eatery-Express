@@ -31,6 +31,7 @@ export async function recommend(input: RecommendationInput): Promise<Recommendat
 
 const prompt = ai.definePrompt({
   name: 'recommendPrompt',
+  model: 'googleai/gemini-2.0-flash',
   input: {schema: RecommendationInputSchema},
   output: {schema: RecommendationOutputSchema},
   prompt: `You are a restaurant recommendation expert.
