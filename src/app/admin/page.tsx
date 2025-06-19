@@ -31,9 +31,9 @@ export default function AdminDashboardPage() {
       
       <Alert variant="destructive" className="bg-yellow-50 border-yellow-400 text-yellow-800 [&>svg]:text-yellow-600 shadow-sm">
         <AlertTriangle className="h-5 w-5" />
-        <AlertTitle className="font-semibold">Security Notice</AlertTitle>
+        <AlertTitle className="font-semibold">Security Notice & Admin ID</AlertTitle>
         <AlertDescription>
-          This admin panel uses a client-side email check for admin access. For this demo, admin privileges are granted to the email address specified in the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">ADMIN_EMAIL</code> constant within the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">src/context/AuthContext.tsx</code> file (currently set to <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@eateryexpress.com</code>). You can modify this constant if you wish to test with a different admin email. For robust security in a production environment, Firebase Custom Claims should be implemented.
+          The Admin ID required to log in and access these features is the email address: <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@eateryexpress.com</code>. This email is defined in the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">ADMIN_EMAIL</code> constant within the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">src/context/AuthContext.tsx</code> file. You can modify this constant if you wish to test with a different admin email. For robust security in a production environment, Firebase Custom Claims should be implemented.
         </AlertDescription>
       </Alert>
 

@@ -12,8 +12,9 @@ import AuthGuard from '@/components/guards/AuthGuard';
 import { Separator } from '@/components/ui/separator';
 
 interface OrderDetailsPageParams {
-  params: { id: string }; 
+  params: { id: string };
 }
+type PageProps = OrderDetailsPageParams;
 
 interface MockOrderDetails {
   id: string;
@@ -68,7 +69,7 @@ async function getOrderDetails(orderId: string): Promise<MockOrderDetails | null
   return null; 
 }
 
-export default function OrderDetailsPage({ params }: OrderDetailsPageParams) {
+export default function OrderDetailsPage({ params }: PageProps) {
   const resolvedParams = use(params as Promise<{ id: string }> | { id: string });
   const searchParamsHook = useSearchParams(); 
   const isNewOrder = searchParamsHook.get('new') === 'true';
