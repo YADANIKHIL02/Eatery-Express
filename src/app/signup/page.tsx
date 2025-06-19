@@ -56,10 +56,7 @@ function SignupForm() {
 
  const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
  // Accessing searchParams here is fine as the component is now client-rendered within Suspense
-    const redirectUrl = searchParams.get('redirect') || '/login';
-      password: '',
-      confirmPassword: '',
-    },
+    const redirectUrl = searchParams.get('redirect') || '/login'; // This line seems to be intended to be part of the onSubmit logic, but was misplaced.
   });
 
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
