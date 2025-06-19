@@ -1,6 +1,6 @@
 
 "use client";
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Loader2, UserPlus, Eye, EyeOff, Utensils } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -41,7 +41,6 @@ function SignupForm() {
  const [showPassword, setShowPassword] = useState(false);
  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
  const router = useRouter();
- // useSearchParams is called here
  const searchParams = useSearchParams();
  const { toast } = useToast();
 
@@ -54,13 +53,7 @@ function SignupForm() {
     },
  });
 
- const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
- // Accessing searchParams here is fine as the component is now client-rendered within Suspense
-    const redirectUrl = searchParams.get('redirect') || '/login'; // This line seems to be intended to be part of the onSubmit logic, but was misplaced.
-  });
-
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
-    // The useSearchParams hook is accessed here, so this part needs to be
     const redirectUrl = searchParams.get('redirect') || '/login';
 
     setIsLoading(true);
@@ -68,9 +61,8 @@ function SignupForm() {
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
       toast({ title: "Signup Successful!", description: "Welcome! You can now login." });
-      const redirectUrl = searchParams.get('redirect') || '/login'; 
       router.push(redirectUrl);
-    } catch (e: any) { // Consider using a more specific error type if possible
+    } catch (e: any) { 
       let friendlyMessage = "Failed to sign up. Please try again.";
       if (e.code === 'auth/invalid-email') {
         friendlyMessage = "Invalid email format. Please enter a valid email address for sign up.";
@@ -136,7 +128,7 @@ function SignupForm() {
                           variant="ghost"
                           size="icon"
                           className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
  <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
@@ -177,7 +169,7 @@ function SignupForm() {
  </FormItem>
  )}
  />
-              {error && <p className="text-sm text-destructive text-center">{error}</p>} {/* This can stay */}
+              {error && <p className="text-sm text-destructive text-center">{error}</p>}
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" disabled={isLoading} className="w-full">
@@ -186,7 +178,7 @@ function SignupForm() {
               </Button>
               <p className="text-sm text-muted-foreground text-center">
                 Already have an account? <Link href="/login" className="text-primary hover:underline font-medium">Log in</Link>
-              </p> {/* Note: The Link component here is fine outside Suspense as it's a standard HTML anchor */}
+              </p> 
              </CardFooter>
            </form>
          </Form>
