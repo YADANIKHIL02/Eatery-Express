@@ -2,7 +2,7 @@
 "use client";
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import DishCard from '@/components/common/DishCard';
@@ -12,6 +12,14 @@ import { SearchX, ChevronLeft } from 'lucide-react';
 import SearchBar from '@/components/common/SearchBar';
 
 export default function SearchResultsPage() {
+ return (
+ <Suspense fallback={<div>Loading search...</div>}>
+ <SearchResultsContent />
+ </Suspense>
+ );
+}
+
+function SearchResultsContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const [filteredDishes, setFilteredDishes] = useState<Dish[]>([]);
