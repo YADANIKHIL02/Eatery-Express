@@ -79,7 +79,7 @@ export default function OrdersPage() {
               <CardDescription className="mb-6">
                 You haven't placed any orders with us. Start exploring restaurants and find your next favorite meal!
               </CardDescription>
-              <Link href="/" passHref>
+              <Link href="/home" passHref>
                 <Button size="lg">Browse Restaurants</Button>
               </Link>
             </CardContent>
@@ -128,4 +128,3 @@ export default function OrdersPage() {
     </AuthGuard>
   );
 }
-

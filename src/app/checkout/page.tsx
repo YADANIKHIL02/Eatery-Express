@@ -95,7 +95,7 @@ export default function CheckoutPage() {
         description: "Redirecting you to the homepage.",
         variant: "default"
       });
-      router.push('/');
+      router.push('/home');
     }
   }, [hasMounted, cartItems, isProcessing, router, toast]);
 
@@ -352,4 +352,3 @@ export default function CheckoutPage() {
     </AuthGuard>
   );
 }
-

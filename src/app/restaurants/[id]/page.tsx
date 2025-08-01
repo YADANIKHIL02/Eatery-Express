@@ -28,7 +28,7 @@ export default async function RestaurantPage({ params }: RestaurantPageParams) {
     return (
       <div className="text-center py-10">
         <h1 className="text-2xl font-semibold">Restaurant not found</h1>
-        <Link href="/" passHref>
+        <Link href="/home" passHref>
           <Button variant="link" className="mt-4">Go back to home</Button>
         </Link>
       </div>
@@ -39,7 +39,7 @@ export default async function RestaurantPage({ params }: RestaurantPageParams) {
 
   return (
     <div className="space-y-8">
-      <Link href="/" passHref>
+      <Link href="/home" passHref>
         <Button variant="outline" className="mb-2">
           <ChevronLeft className="mr-2 h-4 w-4" /> Back to Restaurants
         </Button>

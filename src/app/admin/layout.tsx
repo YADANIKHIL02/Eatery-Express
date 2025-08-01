@@ -24,7 +24,7 @@ export default function AdminLayout({
               <span className="font-headline">Admin Panel</span>
             </Link>
             <nav className="space-x-4">
-              <Link href="/" className="text-sm text-muted-foreground hover:text-primary">
+              <Link href="/home" className="text-sm text-muted-foreground hover:text-primary">
                 Back to Site
               </Link>
             </nav>
@@ -42,4 +42,3 @@ export default function AdminLayout({
     </AuthGuard>
   );
 }
-

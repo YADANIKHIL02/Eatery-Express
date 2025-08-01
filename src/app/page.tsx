@@ -1,80 +1,158 @@
-'use client';
 
+"use client";
+
+import { useState, Suspense } from 'react';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import RestaurantCard from '@/components/common/RestaurantCard';
-import SearchBar from '@/components/common/SearchBar';
-// import RecommendationForm from '@/components/sections/RecommendationForm'; // Original import
-import { mockRestaurants } from '@/data/mock';
-import type { Restaurant } from '@/types';
-import { Utensils, Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2, LogIn, Eye, EyeOff, Utensils } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 
-const RecommendationForm = dynamic(() => import('@/components/sections/RecommendationForm'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex justify-center items-center py-10">
-      <Loader2 className="h-8 w-8 animate-spin text-primary mr-2" />
-      <p>Loading recommendations...</p>
-    </div>
-  ),
+const loginSchema = z.object({
+  identifier: z.string().min(1, "Email or Phone Number is required."),
+  password: z.string().min(6, "Password must be at least 6 characters."),
 });
 
-export default function HomePage() {
-  const restaurants: Restaurant[] = mockRestaurants; // In a real app, fetch this data
+type LoginFormData = z.infer<typeof loginSchema>;
+
+export default function LoginPage() {
+ return (
+ <Suspense fallback={<div>Loading...</div>}>
+ <LoginPageContent />
+ </Suspense>
+ );
+}
+
+function LoginPageContent() {
+ const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
+
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      identifier: '',
+      password: '',
+    },
+  });
+
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await signInWithEmailAndPassword(auth, data.identifier, data.password);
+      toast({ title: "Login Successful!", description: "Welcome back!" });
+      const redirectUrl = searchParams.get('redirect') || '/home';
+      router.push(redirectUrl);
+    } catch (e: any) {
+      let friendlyMessage = "Failed to login. Please check your credentials.";
+      if (e.code === 'auth/invalid-email') {
+        friendlyMessage = "Invalid email format. If using a phone number, ensure it's registered with an email."
+      } else if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        friendlyMessage = "Invalid credentials. Please check your email/phone and password."
+      }
+      setError(friendlyMessage);
+      toast({ variant: "destructive", title: "Login Failed", description: friendlyMessage });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <section className="text-center py-20 bg-gradient-to-br from-primary/20 via-background to-accent/10 rounded-xl shadow-lg">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-center text-primary">
-            Eatery Express: Your next meal, delivered.
-          </h1>
-          <p className="text-lg text-foreground/80 mb-10 max-w-xl mx-auto text-center">
-            Discover top-rated restaurants and enjoy fast delivery to your doorstep.
-          </p>
-          <div className="max-w-2xl mx-auto">
-            <SearchBar />
+    <div className="flex justify-center items-center min-h-[calc(100vh-200px)] py-12 px-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-3">
+             <Link href="/home" className="flex items-center gap-2 text-2xl font-semibold text-primary">
+                <Utensils className="h-7 w-7" />
+                <span className="font-headline">Eatery Express</span>
+            </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Restaurant Browsing Section */}
-      <section id="restaurants">
-        <h2 className="text-3xl font-bold font-headline mb-8 text-center">
-          Explore Restaurants
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {restaurants.map((restaurant) => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-          ))}
-        </div>
-      </section>
-
-      {/* Recommendation Engine Section */}
-      <section id="recommendations" className="py-10">
-         <h2 className="text-3xl font-bold font-headline mb-8 text-center">
-          Need a Suggestion?
-        </h2>
-        <RecommendationForm />
-      </section>
-
-      {/* Example URL Section */}
-      <section className="text-center py-10">
-        <h3 className="text-xl font-semibold mb-4">Example External Link</h3>
-        <p className="text-muted-foreground">
-          Here's an example of how you might link to an external website:
-        </p>
-        <a
-          href="https://example.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary hover:underline font-medium"
-        >
-          Visit Example.com
-        </a>
-      </section>
+          <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
+            <LogIn className="h-6 w-6 text-primary" /> Login to your Account
+          </CardTitle>
+          <CardDescription>
+            Access your Eatery Express account to continue.
+          </CardDescription>
+        </CardHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CardContent className="space-y-6">
+              <FormField
+                control={form.control}
+                name="identifier"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email or Phone Number</FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="you@example.com or 123-456-7890" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Password</FormLabel>
+                      <Link href="/forgot-password"
+                        className="text-sm text-primary hover:underline font-medium"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <FormControl>
+                      <div className="relative">
+                        <Input 
+                          type={showPassword ? "text" : "password"} 
+                          placeholder="••••••••" 
+                          {...field} 
+                          className="pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {error && <p className="text-sm text-destructive text-center">{error}</p>}
+            </CardContent>
+            <CardFooter className="flex flex-col gap-4">
+              <Button type="submit" disabled={isLoading} className="w-full">
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Login
+              </Button>
+              <p className="text-sm text-muted-foreground text-center">
+                Don't have an account? <Link href="/signup" className="text-primary hover:underline font-medium">Sign up</Link>
+              </p>
+            </CardFooter>
+          </form>
+        </Form>
+      </Card>
     </div>
   );
 }

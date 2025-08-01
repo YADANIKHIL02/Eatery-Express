@@ -53,12 +53,12 @@ export default function Header() {
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-xl font-semibold text-primary">
+        <Link href="/home" className="flex items-center gap-2 text-xl font-semibold text-primary">
           <Utensils className="h-7 w-7" />
           <span className="font-headline">Eatery Express</span>
         </Link>
         <nav className="flex items-center gap-1 md:gap-2">
-          <Link href="/" passHref>
+          <Link href="/home" passHref>
             <Button variant="ghost" className="flex items-center gap-1 text-foreground hover:text-primary px-2 sm:px-3">
               <Home className="h-5 w-5" />
               <span className="hidden sm:inline">Home</span>
@@ -133,7 +133,7 @@ export default function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/login" passHref>
+              <Link href="/" passHref>
                 <Button variant="ghost" className="flex items-center gap-1 text-foreground hover:text-primary px-2 sm:px-3">
                   <LogIn className="h-5 w-5" />
                   <span className="hidden sm:inline">Login</span>
@@ -152,4 +152,3 @@ export default function Header() {
     </header>
   );
 }
-

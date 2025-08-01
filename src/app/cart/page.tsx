@@ -19,7 +19,7 @@ export default function CartPage() {
         <ShoppingCart className="mx-auto h-24 w-24 text-muted-foreground mb-6" />
         <h1 className="text-3xl font-bold font-headline mb-4">Your Cart is Empty</h1>
         <p className="text-muted-foreground mb-8">Looks like you haven't added anything to your cart yet.</p>
-        <Link href="/" passHref>
+        <Link href="/home" passHref>
           <Button size="lg">Start Shopping</Button>
         </Link>
       </div>
@@ -100,7 +100,7 @@ export default function CartPage() {
               <Link href="/checkout" passHref className="w-full">
                 <Button size="lg" className="w-full">Proceed to Checkout</Button>
               </Link>
-               <Link href="/" passHref className="w-full">
+               <Link href="/home" passHref className="w-full">
                 <Button variant="outline" className="w-full">
                     <ChevronLeft className="mr-2 h-4 w-4" /> Continue Shopping
                 </Button>
@@ -112,4 +112,3 @@ export default function CartPage() {
     </div>
   );
 }
-

@@ -44,7 +44,7 @@ function SearchResultsContent() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <Link href="/" passHref>
+        <Link href="/home" passHref>
           <Button variant="outline">
             <ChevronLeft className="mr-2 h-4 w-4" /> Back to Home
           </Button>

@@ -54,7 +54,7 @@ function SignupForm() {
  });
 
   const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
-    const redirectUrl = searchParams.get('redirect') || '/login';
+    const redirectUrl = searchParams.get('redirect') || '/';
 
     setIsLoading(true);
     setError(null);
@@ -81,7 +81,7 @@ function SignupForm() {
  <Card className="w-full max-w-md shadow-xl">
  <CardHeader className="text-center">
  <div className="flex items-center justify-center gap-2 mb-3">
- <Link href="/" className="flex items-center gap-2 text-2xl font-semibold text-primary">
+ <Link href="/home" className="flex items-center gap-2 text-2xl font-semibold text-primary">
  <Utensils className="h-7 w-7" />
  <span className="font-headline">Eatery Express</span>
  </Link>
@@ -177,7 +177,7 @@ function SignupForm() {
                 Sign Up
               </Button>
               <p className="text-sm text-muted-foreground text-center">
-                Already have an account? <Link href="/login" className="text-primary hover:underline font-medium">Log in</Link>
+                Already have an account? <Link href="/" className="text-primary hover:underline font-medium">Log in</Link>
               </p> 
              </CardFooter>
            </form>
