@@ -1,4 +1,5 @@
 
+
 export interface Dish {
   id: string;
   name: string;
@@ -25,15 +26,28 @@ export interface CartItem extends Dish {
   quantity: number;
 }
 
+export type OrderStatus = "Pending" | "Preparing" | "Out for Delivery" | "Delivered" | "Cancelled";
+
 export interface Order {
   id: string;
   items: CartItem[];
   totalAmount: number;
-  status: 'Pending' | 'Preparing' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
+  status: OrderStatus;
   deliveryAddress: string;
   contactNumber: string;
   estimatedDeliveryTime?: string; // ISO date string or human-readable
   orderDate: string; // ISO date string
+}
+
+export interface MockOrderDetails {
+  id: string;
+  date: string;
+  total: number;
+  status: OrderStatus; // Using a more specific type
+  items: Array<{ id: string; name: string; quantity: number; price: number; description: string; imageUrl: string; restaurantId: string; category: string }>;
+  estimatedDeliveryTime: string;
+  deliveryAddress: string;
+  contactNumber: string;
 }
 
 export interface UserPreferences {
