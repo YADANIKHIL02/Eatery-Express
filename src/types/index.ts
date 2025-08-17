@@ -41,3 +41,21 @@ export interface UserPreferences {
   dietaryRestrictions: string[];
   spiceLevel: 'mild' | 'medium' | 'hot';
 }
+
+export interface Address {
+  id: string;
+  type: 'Home' | 'Work' | 'Other';
+  fullName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  phoneNumber: string;
+}
+
+export interface UserProfile {
+  uid: string; // Corresponds to Firebase Auth UID
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  addresses: Address[];
+}
