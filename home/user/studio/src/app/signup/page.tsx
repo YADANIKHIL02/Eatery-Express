@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, UserPlus, Eye, EyeOff, Utensils } from 'lucide-react';
+import { Loader2, UserPlus, Eye, EyeOff, Flame } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
@@ -81,15 +81,15 @@ function SignupForm() {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Link href="/home" className="flex items-center gap-2 text-2xl font-semibold text-primary">
-              <Utensils className="h-7 w-7" />
-              <span className="font-headline">Eatery Express</span>
+              <Flame className="h-7 w-7" />
+              <span className="font-headline">QuickPlate</span>
             </Link>
           </div>
           <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">
             <UserPlus className="h-6 w-6 text-primary" /> Create your Account
           </CardTitle>
           <CardDescription>
-            Join Eatery Express to order delicious food.
+            Join QuickPlate to order delicious food.
           </CardDescription>
         </CardHeader>
         <Form {...form}>
@@ -193,5 +193,3 @@ export default function SignupPage() {
     </Suspense>
   );
 }
-
-    
