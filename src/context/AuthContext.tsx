@@ -2,7 +2,7 @@
 "use client";
 
 import type { User } from 'firebase/auth';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import type { ReactNode } from 'react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '@/lib/firebase';
@@ -12,12 +12,14 @@ import { Loader2 } from 'lucide-react';
 // For demonstration purposes, admin access is granted if the user's email matches ADMIN_EMAIL.
 // In a production application, use Firebase Custom Claims for secure role management.
 // This client-side check is NOT secure for production.
-const ADMIN_EMAIL = 'admin@eateryexpress.com'; // Updated to reflect new app name
+const ADMIN_EMAIL = 'admin@eateryexpress.com';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  signup: (email: string, pass: string) => Promise<any>;
+  signin: (email: string, pass: string) => Promise<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,18 +45,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  // Removed the conditional loader here to prevent hydration mismatch.
-  // AuthGuard will handle showing a loader if necessary within the main layout.
-  // if (loading && typeof window !== 'undefined') { 
-  //   return (
-  //     <div className="flex justify-center items-center min-h-screen bg-background">
-  //       <Loader2 className="h-16 w-16 animate-spin text-primary" />
-  //     </div>
-  //   );
-  // }
+  const signup = (email: string, pass: string) => {
+    return createUserWithEmailAndPassword(auth, email, pass);
+  }
+
+  const signin = (email: string, pass: string) => {
+    return signInWithEmailAndPassword(auth, email, pass);
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, signup, signin }}>
       {children}
     </AuthContext.Provider>
   );
@@ -67,4 +67,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
