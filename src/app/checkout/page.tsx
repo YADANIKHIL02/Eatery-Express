@@ -9,14 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useCart } from '@/context/CartContext';
+import { useCart, type CartItem } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
-import { CreditCard, Home, Phone, User, Loader2, Wallet, Smartphone, ShoppingBag } from 'lucide-react';
+import { CreditCard, Home, Loader2, Smartphone, ShoppingBag, Wallet } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import AuthGuard from '@/components/guards/AuthGuard';
+import type { MockOrderDetails } from '@/types';
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, "Full name is required."),
@@ -99,7 +99,6 @@ export default function CheckoutPage() {
     }
   }, [hasMounted, cartItems, isProcessing, router, toast]);
 
-
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -119,14 +118,45 @@ export default function CheckoutPage() {
   const onSubmit: SubmitHandler<CheckoutFormData> = async (data) => {
     setIsProcessing(true);
     console.log("Checkout Data:", data);
+    
     await new Promise(resolve => setTimeout(resolve, 2000));
-    const orderId = Math.random().toString(36).substr(2, 9);
+    
+    const orderId = `qp_${Math.random().toString(36).substr(2, 9)}`;
+    const deliveryFee = 5.00;
+    const totalAmount = cartTotal + deliveryFee;
+
+    // Create the order details object
+    const newOrder: MockOrderDetails = {
+        id: orderId,
+        date: new Date().toISOString(),
+        total: totalAmount,
+        status: 'Preparing',
+        items: cartItems.map((item: CartItem) => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            description: item.description,
+            imageUrl: item.imageUrl,
+            restaurantId: item.restaurantId,
+            category: item.category,
+        })),
+        estimatedDeliveryTime: new Date(Date.now() + 30 * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        deliveryAddress: `${data.address}, ${data.city}, ${data.postalCode}`,
+        contactNumber: data.phoneNumber,
+    };
+
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+        localStorage.setItem(orderId, JSON.stringify(newOrder));
+    }
     
     toast({
       title: "Order Placed Successfully!",
       description: `Your order ID is ${orderId}. We'll notify you about its status.`,
       duration: 5000,
     });
+    
     clearCart();
     router.push(`/orders/${orderId}?new=true`);
   };
@@ -275,7 +305,7 @@ export default function CheckoutPage() {
                         <FormField control={form.control} name="cvv" render={({ field }) => (
                           <FormItem>
                             <FormLabel>CVV</FormLabel>
-                            <FormControl><Input placeholder="123" {...field} type="password" /></FormControl>
+                            <FormControl><Input placeholder="123" type="password" /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )} />

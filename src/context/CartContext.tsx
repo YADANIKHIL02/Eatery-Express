@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { CartItem, Dish } from '@/types';
@@ -21,8 +22,13 @@ const CART_STORAGE_KEY = 'eateryExpressCart';
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     if (typeof window !== 'undefined') {
-      const storedCart = localStorage.getItem(CART_STORAGE_KEY);
-      return storedCart ? JSON.parse(storedCart) : [];
+      try {
+        const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+        return storedCart ? JSON.parse(storedCart) : [];
+      } catch (error) {
+        console.error("Failed to parse cart from localStorage", error);
+        return [];
+      }
     }
     return [];
   });
@@ -59,6 +65,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   
   const clearCart = () => {
     setCartItems([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    }
   };
 
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -78,3 +87,6 @@ export const useCart = () => {
   }
   return context;
 };
+
+// Also exporting the type for use in other components
+export type { CartItem };

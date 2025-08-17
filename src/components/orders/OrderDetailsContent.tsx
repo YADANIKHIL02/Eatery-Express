@@ -1,20 +1,38 @@
 
 "use client"; 
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, ChevronLeft, Clock, Package, Truck, ShoppingBag, MapPin, PhoneCall, Activity } from 'lucide-react';
+import { CheckCircle, ChevronLeft, Clock, Package, Truck, ShoppingBag, MapPin, PhoneCall, Activity, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import type { MockOrderDetails, OrderStatus } from '@/types';
 
 // This is now the Client Component
-export default function OrderDetailsContent({ orderDetails }: { orderDetails: MockOrderDetails | null }) {
+export default function OrderDetailsContent({ initialOrderDetails }: { initialOrderDetails: MockOrderDetails | null }) {
   const searchParams = useSearchParams();
   const isNewOrder = searchParams.get('new') === 'true';
+  const [orderDetails, setOrderDetails] = useState(initialOrderDetails);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (initialOrderDetails?.id?.startsWith('qp_')) {
+      const storedOrderData = localStorage.getItem(initialOrderDetails.id);
+      if (storedOrderData) {
+        try {
+          const parsedOrder = JSON.parse(storedOrderData) as MockOrderDetails;
+          setOrderDetails(parsedOrder);
+        } catch (e) {
+          console.error("Failed to parse order from localStorage", e);
+        }
+      }
+    }
+    setLoading(false);
+  }, [initialOrderDetails]);
+
 
   const getStatusInfo = (status: OrderStatus) => {
     switch (status) {
@@ -25,6 +43,10 @@ export default function OrderDetailsContent({ orderDetails }: { orderDetails: Mo
       default: return { icon: <Package className="w-5 h-5 text-muted-foreground" />, text: 'Pending', color: 'text-muted-foreground bg-muted/50 border-border' };
     }
   };
+  
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
+  }
 
   if (!orderDetails) {
     return (

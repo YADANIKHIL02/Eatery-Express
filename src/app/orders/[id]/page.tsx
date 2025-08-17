@@ -11,11 +11,17 @@ interface OrderDetailsPageParams {
   params: { id: string };
 }
 
-// In a real app, this would fetch from a database or API
+// In a real app, this would fetch from a database or API.
+// Here, we simulate it by checking localStorage first, then using mock data as a fallback.
 async function getOrderDetails(orderId: string): Promise<MockOrderDetails | null> {
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 500)); 
+  await new Promise(resolve => setTimeout(resolve, 500));
   
+  // For newly created orders, we first check localStorage.
+  // This logic runs on the server, so we can't directly access localStorage here.
+  // We will pass the orderId to the client component which will fetch from localStorage.
+  // For the server component, we just need to handle the mock data case.
+
   if (orderId.startsWith('mock')) {
      const baseOrder = {
         id: orderId,
@@ -35,21 +41,24 @@ async function getOrderDetails(orderId: string): Promise<MockOrderDetails | null
   }
   
   // This case handles newly created orders from the checkout page.
-  if (!orderId.startsWith('mock') && orderId.length === 9) { 
-    return {
+  // The client component will handle fetching from localStorage.
+  // We return a placeholder structure or null.
+  if (orderId.startsWith('qp_')) {
+    // We can't access localStorage on the server.
+    // The client component will handle this.
+    // Return a basic structure so the page doesn't 404 immediately.
+     return {
       id: orderId,
       date: new Date().toISOString(),
-      total: Math.random() * 50 + 20, 
+      total: 0, 
       status: 'Preparing',
-      items: [
-        { id: 'd3', name: 'Personalized Meal Recommendation', quantity: 1, price: 25.00, description: '', imageUrl: '', restaurantId: '', category: '' },
-        { id: 'd4', name: 'Delivery Fee', quantity: 1, price: 5.00, description: '', imageUrl: '', restaurantId: '', category: '' },
-      ],
+      items: [],
       estimatedDeliveryTime: new Date(Date.now() + 30 * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      deliveryAddress: '123 Main St, Anytown, USA', 
-      contactNumber: '(555) 123-4567',
+      deliveryAddress: 'Loading...', 
+      contactNumber: 'Loading...',
     };
   }
+
 
   return null; 
 }
@@ -75,7 +84,7 @@ export default async function OrderDetailsPage( { params }: OrderDetailsPagePara
   return (
     <AuthGuard>
       <Suspense fallback={<div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
-        <OrderDetailsContent orderDetails={orderDetails} />
+        <OrderDetailsContent initialOrderDetails={orderDetails} />
       </Suspense>
     </AuthGuard>
   );
