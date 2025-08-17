@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2, Mail, KeyRound, Utensils, ArrowLeft } from 'lucide-react';
+import { Loader2, Mail, KeyRound, Flame, ArrowLeft } from 'lucide-react';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
@@ -66,8 +66,8 @@ export default function ForgotPasswordPage() {
         <CardHeader className="text-center">
            <div className="flex items-center justify-center gap-2 mb-3">
              <Link href="/" className="flex items-center gap-2 text-2xl font-semibold text-primary">
-                <Utensils className="h-7 w-7" />
-                <span className="font-headline">Eatery Express</span>
+                <Flame className="h-7 w-7" />
+                <span className="font-headline">QuickPlate</span>
             </Link>
           </div>
           <CardTitle className="font-headline text-2xl flex items-center justify-center gap-2">

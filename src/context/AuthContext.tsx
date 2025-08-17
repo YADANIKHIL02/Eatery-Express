@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react';
 // For demonstration purposes, admin access is granted if the user's email matches ADMIN_EMAIL.
 // In a production application, use Firebase Custom Claims for secure role management.
 // This client-side check is NOT secure for production.
-const ADMIN_EMAIL = 'admin@eateryexpress.com';
+const ADMIN_EMAIL = 'admin@quickplate.com';
 
 interface AuthContextType {
   user: User | null;

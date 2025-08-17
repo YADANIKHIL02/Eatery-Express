@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import RestaurantCard from '@/components/common/RestaurantCard';
 import SearchBar from '@/components/common/SearchBar';
 import { mockRestaurants } from '@/data/mock';
 import type { Restaurant } from '@/types';
-import { Utensils, Loader2 } from 'lucide-react';
+import { Flame, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -28,7 +29,7 @@ export default function HomePage() {
       <section className="text-center py-20 bg-gradient-to-br from-primary/20 via-background to-accent/10 rounded-xl shadow-lg">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold font-headline mb-6 text-center text-primary">
-            Eatery Express: Your next meal, delivered.
+            QuickPlate: Your next meal, delivered.
           </h1>
           <p className="text-lg text-foreground/80 mb-10 max-w-xl mx-auto text-center">
             Discover top-rated restaurants and enjoy fast delivery to your doorstep.

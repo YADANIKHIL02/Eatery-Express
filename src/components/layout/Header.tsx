@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Home, ListOrdered, ShoppingCart, Utensils, Shield, LogIn, LogOut, UserCircle, Loader2 } from 'lucide-react';
+import { Home, ListOrdered, ShoppingCart, Flame, Shield, LogIn, LogOut, UserCircle, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -54,8 +54,8 @@ export default function Header() {
     <header className="bg-card border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/home" className="flex items-center gap-2 text-xl font-semibold text-primary">
-          <Utensils className="h-7 w-7" />
-          <span className="font-headline">Eatery Express</span>
+          <Flame className="h-7 w-7" />
+          <span className="font-headline">QuickPlate</span>
         </Link>
         <nav className="flex items-center gap-1 md:gap-2">
           <Link href="/home" passHref>

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, Utensils, PlusCircle, Edit, Trash2 } from "lucide-react";
+import { ChevronLeft, Flame, PlusCircle, Edit, Trash2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -62,7 +62,7 @@ export default function AdminRestaurantsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <h1 className="text-3xl font-bold font-headline flex items-center gap-2">
-          <Utensils className="w-8 h-8 text-primary" /> Restaurant Management
+          <Flame className="w-8 h-8 text-primary" /> Restaurant Management
         </h1>
         <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" className="w-full sm:w-auto">
@@ -93,7 +93,7 @@ export default function AdminRestaurantsPage() {
         <Card className="shadow-md">
           <CardHeader>
             <CardTitle>All Restaurants ({restaurants.length})</CardTitle>
-            <CardDescription>A list of all restaurants on the Eatery Express platform.</CardDescription>
+            <CardDescription>A list of all restaurants on the QuickPlate platform.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">

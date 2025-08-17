@@ -87,7 +87,7 @@ export default function AdminSettingsPage() {
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle>Platform Configuration</CardTitle>
-              <CardDescription>Adjust core settings for the Eatery Express platform.</CardDescription>
+              <CardDescription>Adjust core settings for the QuickPlate platform.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <FormField

@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import { ListOrdered, Utensils, Users, AlertTriangle, Settings, BarChart3, UserCircle } from "lucide-react";
+import { ListOrdered, Utensils, Users, AlertTriangle, Settings, BarChart3, UserCircle, Flame } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from '@/context/AuthContext';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +33,7 @@ export default function AdminDashboardPage() {
         <AlertTriangle className="h-5 w-5" />
         <AlertTitle className="font-semibold">Admin ID Information</AlertTitle>
         <AlertDescription>
-          To access the admin features, log in with the email: <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@eateryexpress.com</code>. This is defined in the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">src/context/AuthContext.tsx</code> file and can be changed if needed.
+          To access the admin features, log in with the email: <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">admin@quickplate.com</code>. This is defined in the <code className="font-mono p-0.5 bg-yellow-200/70 rounded text-yellow-900">src/context/AuthContext.tsx</code> file and can be changed if needed.
         </AlertDescription>
       </Alert>
 
@@ -51,7 +51,7 @@ export default function AdminDashboardPage() {
          <Card className="shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Restaurants</CardTitle>
-            <Utensils className="h-5 w-5 text-muted-foreground" />
+            <Flame className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalRestaurants}</div>
@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
         <Card className="hover:shadow-lg transition-shadow duration-300 flex flex-col">
            <CardHeader className="pb-3">
             <div className="flex items-center gap-3 mb-2">
-              <Utensils className="h-7 w-7 text-primary" />
+              <Flame className="h-7 w-7 text-primary" />
               <CardTitle className="text-lg font-medium font-headline">Restaurant Management</CardTitle>
             </div>
             <CardDescription className="text-sm">
@@ -168,4 +168,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
