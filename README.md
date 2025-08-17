@@ -20,3 +20,4 @@ If you are using Generative AI features in this application (which use Genkit an
 3.  **Restart your Next.js development server** after creating or modifying the `.env.local` file for the changes to take effect.
 
 This API key is necessary for the application to make calls to Google's Generative AI models. Without it, AI-powered features like personalized recommendations will likely result in an Internal Server Error.
+# Quickplate
