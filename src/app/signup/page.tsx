@@ -176,7 +176,7 @@ function SignupForm() {
                 Sign Up
               </Button>
               <p className="text-sm text-muted-foreground text-center">
-                Already have an account? <Link href="/login" className="text-primary hover:underline font-medium">Log in</Link>
+                Already have an account? <Link href="/" className="text-primary hover:underline font-medium">Log in</Link>
               </p>
             </CardFooter>
           </form>
