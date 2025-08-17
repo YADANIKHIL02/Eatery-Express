@@ -60,7 +60,7 @@ function SignupForm() {
     try {
       await signup(data.email, data.password);
       toast({ title: "Signup Successful!", description: "Welcome! You can now login." });
-      router.push('/login'); // After signup, send them to login
+      router.push('/'); // After signup, send them to login
     } catch (e: any) { 
       let friendlyMessage = "Failed to sign up. Please try again.";
       if (e.code === 'auth/invalid-email') {
