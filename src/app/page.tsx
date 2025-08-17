@@ -1,7 +1,7 @@
 
-"use client";
+'use client';
 
-import { useState, Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,39 +10,41 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2, LogIn, Eye, EyeOff, Utensils } from 'lucide-react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 const loginSchema = z.object({
-  identifier: z.string().min(1, "Email or Phone Number is required."),
+  email: z.string().email("Invalid email address.").min(1, "Email is required."),
   password: z.string().min(6, "Password must be at least 6 characters."),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
- return (
- <Suspense fallback={<div>Loading...</div>}>
- <LoginPageContent />
- </Suspense>
- );
-}
 
-function LoginPageContent() {
- const [isLoading, setIsLoading] = useState(false);
+function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const { signin, user, loading } = useAuth();
+
+  const redirectUrl = searchParams.get('redirect') || '/home';
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push(redirectUrl);
+    }
+  }, [user, loading, router, redirectUrl]);
+
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      identifier: '',
+      email: '',
       password: '',
     },
   });
@@ -51,16 +53,13 @@ function LoginPageContent() {
     setIsLoading(true);
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, data.identifier, data.password);
+      await signin(data.email, data.password);
       toast({ title: "Login Successful!", description: "Welcome back!" });
-      const redirectUrl = searchParams.get('redirect') || '/home';
       router.push(redirectUrl);
     } catch (e: any) {
       let friendlyMessage = "Failed to login. Please check your credentials.";
-      if (e.code === 'auth/invalid-email') {
-        friendlyMessage = "Invalid email format. If using a phone number, ensure it's registered with an email."
-      } else if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
-        friendlyMessage = "Invalid credentials. Please check your email/phone and password."
+      if (e.code === 'auth/invalid-email' || e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        friendlyMessage = "Invalid credentials. Please check your email and password."
       }
       setError(friendlyMessage);
       toast({ variant: "destructive", title: "Login Failed", description: friendlyMessage });
@@ -68,6 +67,14 @@ function LoginPageContent() {
       setIsLoading(false);
     }
   };
+  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[calc(100vh-200px)]">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-200px)] py-12 px-4">
@@ -91,12 +98,12 @@ function LoginPageContent() {
             <CardContent className="space-y-6">
               <FormField
                 control={form.control}
-                name="identifier"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email or Phone Number</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="you@example.com or 123-456-7890" {...field} />
+                      <Input type="email" placeholder="you@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -154,5 +161,14 @@ function LoginPageContent() {
         </Form>
       </Card>
     </div>
+  );
+}
+
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

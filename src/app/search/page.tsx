@@ -8,37 +8,33 @@ import { Button } from '@/components/ui/button';
 import DishCard from '@/components/common/DishCard';
 import { mockDishes } from '@/data/mock';
 import type { Dish } from '@/types';
-import { SearchX, ChevronLeft } from 'lucide-react';
+import { SearchX, ChevronLeft, Loader2 } from 'lucide-react';
 import SearchBar from '@/components/common/SearchBar';
 
-export default function SearchResultsPage() {
- return (
- <Suspense fallback={<div>Loading search...</div>}>
- <SearchResultsContent />
- </Suspense>
- );
-}
-
-function SearchResultsContent() {
+function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const [filteredDishes, setFilteredDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (query) {
-      setLoading(true);
-      const lowerCaseQuery = query.toLowerCase();
-      const results = mockDishes.filter(dish => 
-        dish.name.toLowerCase().includes(lowerCaseQuery) || 
-        dish.description.toLowerCase().includes(lowerCaseQuery)
-      );
-      setFilteredDishes(results);
+    // Simulate loading for better UX, even with mock data
+    setLoading(true);
+    const timer = setTimeout(() => {
+      if (query) {
+        const lowerCaseQuery = query.toLowerCase();
+        const results = mockDishes.filter(dish => 
+          dish.name.toLowerCase().includes(lowerCaseQuery) || 
+          dish.description.toLowerCase().includes(lowerCaseQuery)
+        );
+        setFilteredDishes(results);
+      } else {
+        setFilteredDishes([]);
+      }
       setLoading(false);
-    } else {
-      setFilteredDishes([]);
-      setLoading(false);
-    }
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
   }, [query]);
 
   return (
@@ -55,8 +51,8 @@ function SearchResultsContent() {
       </div>
 
       {loading ? (
-        <div className="text-center py-10">
-          <p className="text-lg text-muted-foreground">Loading search results...</p>
+        <div className="flex justify-center items-center py-20">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
       ) : query ? (
         <>
@@ -90,4 +86,12 @@ function SearchResultsContent() {
       )}
     </div>
   );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
+      <SearchResults />
+    </Suspense>
+  )
 }
