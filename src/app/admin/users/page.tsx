@@ -55,28 +55,26 @@ export default function AdminUsersPage() {
   };
 
   const handleToggleUserStatus = (userId: string) => {
-    setUsers(prevUsers =>
-      prevUsers.map(user => {
-        if (user.id === userId) {
-          if (user.role === 'Admin') {
-            toast({ title: "Action Denied", description: "Admin user status cannot be changed in this demo.", variant: "destructive" });
-            return user;
-          }
-          let newStatus: UserStatus;
-          let toastMessage: string;
-          if (user.status === 'Active') {
-            newStatus = 'Suspended';
-            toastMessage = `User ${user.email} has been suspended.`;
-          } else { // Suspended or Pending
-            newStatus = 'Active';
-            toastMessage = `User ${user.email} has been activated.`;
-          }
-          toast({ title: "User Status Updated", description: toastMessage });
-          return { ...user, status: newStatus };
-        }
-        return user;
-      })
-    );
+      const userToUpdate = users.find(u => u.id === userId);
+      if (!userToUpdate) return;
+
+      if (userToUpdate.role === 'Admin') {
+          toast({ title: "Action Denied", description: "Admin user status cannot be changed in this demo.", variant: "destructive" });
+          return;
+      }
+      
+      const newStatus = userToUpdate.status === 'Active' ? 'Suspended' : 'Active';
+      const toastMessage = userToUpdate.status === 'Active' 
+          ? `User ${userToUpdate.email} has been suspended.`
+          : `User ${userToUpdate.email} has been activated.`;
+
+      setUsers(prevUsers =>
+          prevUsers.map(user =>
+              user.id === userId ? { ...user, status: newStatus } : user
+          )
+      );
+
+      toast({ title: "User Status Updated", description: toastMessage });
   };
 
 

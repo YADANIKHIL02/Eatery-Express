@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -16,29 +17,31 @@ export default function AuthGuard({ children, adminOnly = false }: AuthGuardProp
   const { user, loading, isAdmin } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        // Store the current path to redirect back after login
-        router.push(`/?redirect=${encodeURIComponent(pathname)}`);
-      } else if (adminOnly && !isAdmin) {
-        // If adminOnly route and user is not admin, redirect to homepage.
-        // console.warn("Access to admin route denied. User is not an admin. Redirecting to home.");
-        toast({
-          title: "Access Denied",
-          description: "You do not have permission to view this page.",
-          variant: "destructive",
-        });
-        router.push('/home'); 
-      }
+    if (loading) {
+      return; // Do nothing while loading
     }
-  }, [user, loading, isAdmin, adminOnly, router, pathname]);
 
-  if (loading || (!user && !loading) || (adminOnly && !isAdmin && user && !loading)) {
+    if (!user) {
+      // Store the current path to redirect back after login
+      router.push(`/?redirect=${encodeURIComponent(pathname)}`);
+    } else if (adminOnly && !isAdmin) {
+      // If adminOnly route and user is not admin, redirect to homepage.
+      toast({
+        title: "Access Denied",
+        description: "You do not have permission to view this page.",
+        variant: "destructive",
+      });
+      router.push('/home'); 
+    }
+  }, [user, loading, isAdmin, adminOnly, router, pathname, toast]);
+
+  if (loading || !user || (adminOnly && !isAdmin)) {
     // Show loader if:
     // 1. Auth state is loading.
-    // 2. Auth state finished loading, no user (redirect will occur).
+    // 2. Auth state finished loading, but no user (redirect will occur).
     // 3. Auth state finished loading, user exists, but it's an adminOnly route and user isn't admin (redirect will occur).
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -46,13 +49,7 @@ export default function AuthGuard({ children, adminOnly = false }: AuthGuardProp
       </div>
     );
   }
+
   // At this point, user is loaded, and if it's an adminOnly route, user is an admin.
   return <>{children}</>;
 }
-
-// Basic toast for AuthGuard (cannot use useToast directly here easily without context issues in redirects)
-// A more robust solution might involve a global non-React toast or passing toast via props.
-const toast = (options: {title: string, description: string, variant: string}) => {
-  // This is a simplified toast for the guard. In a real app, you might use a global toast instance.
-  console.warn(`AuthGuard Toast: ${options.title} - ${options.description} (${options.variant})`);
-};
