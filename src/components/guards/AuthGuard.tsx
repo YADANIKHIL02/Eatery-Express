@@ -26,7 +26,7 @@ export default function AuthGuard({ children, adminOnly = false }: AuthGuardProp
 
     if (!user) {
       // Store the current path to redirect back after login
-      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      router.push(`/?redirect=${encodeURIComponent(pathname)}`);
     } else if (adminOnly && !isAdmin) {
       // If adminOnly route and user is not admin, redirect to homepage.
       toast({
@@ -38,19 +38,11 @@ export default function AuthGuard({ children, adminOnly = false }: AuthGuardProp
     }
   }, [user, loading, isAdmin, adminOnly, router, pathname, toast]);
 
-  if (loading || !user) {
+  if (loading || !user || (adminOnly && !isAdmin)) {
     // Show loader if:
     // 1. Auth state is loading.
     // 2. Auth state finished loading, but no user (redirect will occur).
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-      </div>
-    );
-  }
-  
-  if (adminOnly && !isAdmin) {
-     // Still show loader while redirecting non-admin from admin page
+    // 3. Auth state finished loading, user exists, but it's an adminOnly route and user isn't admin (redirect will occur).
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
