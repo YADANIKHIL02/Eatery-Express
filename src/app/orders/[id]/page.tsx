@@ -1,7 +1,7 @@
 
 "use client"; 
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, ChevronLeft, Clock, Package, Truck, Loader2, ShoppingBag, MapPin, PhoneCall, ClipboardList, Activity } from 'lucide-react';
@@ -69,27 +69,7 @@ async function getOrderDetails(orderId: string): Promise<MockOrderDetails | null
 }
 
 
-function OrderDetails({ params }: OrderDetailsPageParams) {
-  const searchParams = useSearchParams(); 
-  const isNewOrder = searchParams.get('new') === 'true';
-  const [orderDetails, setOrderDetails] = useState<MockOrderDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const orderId = params.id;
-
-  useEffect(() => {
-    if (typeof orderId === 'string' && orderId.trim() !== '') {
-      const fetchData = async () => {
-        setLoading(true);
-        const data = await getOrderDetails(orderId);
-        setOrderDetails(data);
-        setLoading(false);
-      }
-      fetchData();
-    } else {
-      setLoading(false);
-      setOrderDetails(null);
-    }
-  }, [orderId]); 
+function OrderDetailsContent({ orderDetails, isNewOrder }: { orderDetails: MockOrderDetails | null; isNewOrder: boolean }) {
 
   const getStatusInfo = (status: OrderStatus) => {
     switch (status) {
@@ -103,10 +83,6 @@ function OrderDetails({ params }: OrderDetailsPageParams) {
 
   const statusInfo = orderDetails ? getStatusInfo(orderDetails.status) : getStatusInfo('Pending');
 
-  if (loading) {
-    return <div className="flex justify-center items-center min-h-[50vh]"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>
-  }
-  
   if (!orderDetails) {
     return (
         <Card className="text-center py-10 shadow-lg">
@@ -244,11 +220,24 @@ function OrderDetails({ params }: OrderDetailsPageParams) {
   );
 }
 
-export default function OrderDetailsPage( { params }: OrderDetailsPageParams) {
+
+// A wrapper component to safely use useSearchParams on the client
+function OrderDetailsWrapper({ orderDetails }: { orderDetails: MockOrderDetails | null }) {
+  const searchParams = useSearchParams();
+  const isNewOrder = searchParams.get('new') === 'true';
+
+  return <OrderDetailsContent orderDetails={orderDetails} isNewOrder={isNewOrder} />;
+}
+
+
+export default async function OrderDetailsPage( { params }: OrderDetailsPageParams) {
+  const orderId = params.id;
+  const orderDetails = await getOrderDetails(orderId);
+
   return (
     <AuthGuard>
       <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>}>
-        <OrderDetails params={params} />
+        <OrderDetailsWrapper orderDetails={orderDetails} />
       </Suspense>
     </AuthGuard>
   );
