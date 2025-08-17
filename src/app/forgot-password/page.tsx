@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
                 Send Reset Link
               </Button>
               <Button variant="link" asChild className="text-sm text-muted-foreground hover:text-primary">
-                <Link href="/login">
+                <Link href="/">
                   <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
                   Back to Login
                 </Link>
